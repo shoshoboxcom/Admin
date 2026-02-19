@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Панель управления — MM2 Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --border: #1e1e2e;
+    --accent: #9403fc;
+    --accent2: #ff3c78;
+    --text: #e8e8f0;
+    --muted: #555570;
+    --green: #00e87a;
+    --red: #ff3c78;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Space Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  .login-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px;
+    width: 360px;
+    text-align: center;
+  }
+
+  .login-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+
+  .login-sub { color: var(--muted); font-size: 12px; margin-bottom: 36px; letter-spacing: 2px; }
+
+  .login-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    margin-bottom: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: center;
+    letter-spacing: 3px;
+  }
+
+  .login-input:focus { border-color: var(--accent); }
+
+  .login-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .login-btn:hover { opacity: 0.85; }
+  .login-error { color: var(--red); font-size: 12px; margin-top: 12px; display: none; }
+
+  #main-panel { display: none; }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 16px; }
+
+  .save-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .save-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .save-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .logout-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .status-msg { font-size: 12px; padding: 8px 16px; border-radius: 6px; display: none; }
+  .status-msg.success { background: rgba(0,232,122,0.1); color: var(--green); border: 1px solid rgba(0,232,122,0.2); }
+  .status-msg.error { background: rgba(255,60,120,0.1); color: var(--red); border: 1px solid rgba(255,60,120,0.2); }
+  .status-msg.loading { background: rgba(148,3,252,0.1); color: var(--accent); border: 1px solid rgba(148,3,252,0.2); }
+  .status-msg.show { display: block; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 32px; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .stat-num.green { color: var(--green); }
+  .stat-num.red { color: var(--red); }
+  .stat-num.purple { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat-label { color: var(--muted); font-size: 11px; letter-spacing: 2px; }
+
+  .toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+
+  .search-box {
+    flex: 1; min-width: 200px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-box:focus { border-color: var(--accent); }
+
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  .bulk-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .bulk-btn.green-btn:hover { border-color: var(--green); color: var(--green); }
+  .bulk-btn.red-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+
+  .product-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .product-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .product-card.out { opacity: 0.55; }
+
+  .product-card-top { display: flex; align-items: center; gap: 12px; width: 100%; }
+
+  .product-img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: var(--bg); }
+
+  .product-info { flex: 1; min-width: 0; }
+  .product-name-txt { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+  .product-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+  .badge { font-size: 9px; padding: 2px 7px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; }
+  .badge-rarity-godly { background: rgba(255,0,0,0.15); color: #ff5555; }
+  .badge-rarity-ancient { background: rgba(98,0,255,0.15); color: #9b6bff; }
+  .badge-rarity-unique { background: rgba(255,140,0,0.15); color: #ffb347; }
+  .badge-rarity-legendary { background: rgba(255,0,0,0.1); color: #ff6666; }
+  .badge-rarity-rare { background: rgba(38,192,0,0.15); color: #5dde5d; }
+  .badge-rarity-uncommon { background: rgba(0,145,255,0.15); color: #5ab4ff; }
+  .badge-rarity-common { background: rgba(128,128,128,0.15); color: #aaa; }
+  .badge-rarity-vintage { background: rgba(255,204,0,0.15); color: #ffd740; }
+  .badge-cat { background: rgba(148,3,252,0.15); color: #c060ff; }
+  .badge-chroma { background: rgba(255,60,120,0.15); color: var(--accent2); }
+  .discount-badge { display: inline-block; background: rgba(255,215,0,0.15); color: #ffd740; border: 1px solid rgba(255,215,0,0.3); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; }
+
+  .price-editor {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .price-field label { display: block; font-size: 9px; color: var(--muted); letter-spacing: 1.5px; margin-bottom: 4px; }
+
+  .price-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .price-input:focus { border-color: var(--accent); }
+
+  .price-preview { font-size: 10px; color: var(--muted); margin-top: 2px; grid-column: 1/-1; line-height: 1.6; }
+  .price-preview .pv { color: var(--green); font-weight: 700; }
+  .price-preview .po { color: var(--red); text-decoration: line-through; }
+  .price-preview .pd { color: #ffd740; font-weight: 700; }
+
+  .toggle-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+  .toggle { position: relative; width: 48px; height: 26px; cursor: pointer; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: var(--border); border-radius: 26px; transition: 0.25s; }
+  .slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 4px; bottom: 4px; background: var(--muted); border-radius: 50%; transition: 0.25s; }
+  input:checked + .slider { background: rgba(0,232,122,0.25); border: 1px solid var(--green); }
+  input:checked + .slider::before { transform: translateX(22px); background: var(--green); }
+  .toggle-label { font-size: 9px; letter-spacing: 1px; font-weight: 700; }
+  .toggle-label.in { color: var(--green); }
+  .toggle-label.out { color: var(--red); }
+
+  @media (max-width: 600px) {
+    .container { padding: 16px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    header { padding: 14px 16px; }
+    .price-editor { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">MM2 SHOP</div>
+    <div class="login-sub">ADMIN PANEL</div>
+    <input type="password" class="login-input" id="password-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">ВОЙТИ</button>
+    <div class="login-error" id="login-error">Неверный пароль</div>
+  </div>
+</div>
+
+<div id="main-panel">
+  <header>
+    <div class="header-left">⚡ MM2 ADMIN</div>
+    <div class="header-right">
+      <div class="status-msg" id="status-msg"></div>
+      <button class="save-btn" onclick="saveToJsonBin()" id="save-btn">💾 СОХРАНИТЬ</button>
+      <button class="logout-btn" onclick="doLogout()">ВЫЙТИ</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num purple" id="stat-total">0</div>
+        <div class="stat-label">ВСЕГО ТОВАРОВ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num green" id="stat-in">0</div>
+        <div class="stat-label">В НАЛИЧИИ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num red" id="stat-out">0</div>
+        <div class="stat-label">НЕТ В НАЛИЧИИ</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input class="search-box" id="admin-search" placeholder="🔍 Поиск товара..." oninput="renderProducts()">
+      <button class="filter-btn active" id="filter-all" onclick="setFilter('all')">ВСЕ</button>
+      <button class="filter-btn" id="filter-in" onclick="setFilter('in')">В НАЛИЧИИ</button>
+      <button class="filter-btn" id="filter-out" onclick="setFilter('out')">НЕТ</button>
+      <button class="bulk-btn green-btn" onclick="bulkSet(true)">✅ ВСЕ В НАЛИЧИИ</button>
+      <button class="bulk-btn red-btn" onclick="bulkSet(false)">❌ ВСЕХ УБРАТЬ</button>
+    </div>
+
+    <div class="product-grid" id="admin-product-grid"></div>
+
+  </div>
+</div>
+
+<script>
+// ========= ПАРОЛЬ =========
+const ADMIN_PASSWORD = 'admin123';
+
+// ========= JSONBIN =========
+const JSONBIN_API_KEY = '$2a$10$aeI1awKXrn8g94Y10v5BUeP.zPPFcLoyrt0AgEuCTDBe7XBqSo.ne';
+const JSONBIN_BIN_ID  = '6996ee4dd0ea881f40c692c7';
+
+// ========= ТОВАРЫ =========
+// Добавляй товары сюда.
+// price — запасная цена на случай если JSONBin недоступен.
+// Цены и скидки меняются через интерфейс и сохраняются в JSONBin.
+const PRODUCTS = [
+  {
+    id: 'sweet',
+    name: 'Sweet',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://bit.ly/4aGGm5I',
+    price: 1204,
+  },
+  // Добавляй новые товары сюда по образцу выше
+];
+
+let stockData = {};
+let currentFilter = 'all';
+
+// ========= РАСЧЁТ ЦЕНЫ +40% =========
+function calcPrice(base) {
+  const p = base * 1.40;
+  if (p < 10) return Math.ceil(p);
+  if (p < 100) return Math.ceil(p / 5) * 5;
+  if (p < 1000) {
+    const last = Math.floor(p) % 10;
+    const b = Math.floor(p / 10) * 10;
+    if (last === 0) return b;
+    else if (last <= 5) return b + 5;
+    else return b + 10;
+  }
+  return Math.ceil(p / 10) * 10;
+}
+
+// ========= LOGIN =========
+function doLogin() {
+  const val = document.getElementById('password-input').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-panel').style.display = 'block';
+    loadFromJsonBin();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('password-input').value = '';
+  }
+}
+
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('main-panel').style.display = 'none';
+  document.getElementById('password-input').value = '';
+}
+
+// ========= JSONBIN =========
+async function loadFromJsonBin() {
+  showStatus('Загрузка данных...', 'loading');
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': JSONBIN_API_KEY }
+    });
+    if (!res.ok) throw new Error('Ошибка ' + res.status);
+    const data = await res.json();
+    stockData = data.record || {};
+    showStatus('Данные загружены ✓', 'success');
+  } catch (e) {
+    showStatus('Не удалось загрузить: ' + e.message, 'error');
+  }
+  // Инициализируем новые товары которых ещё нет в JSONBin
+  PRODUCTS.forEach(p => {
+    if (!stockData[p.id]) {
+      stockData[p.id] = { inStock: true, price: p.price, oldPrice: null };
+    }
+  });
+  renderProducts();
+  updateStats();
+}
+
+async function saveToJsonBin() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  showStatus('Сохранение...', 'loading');
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
+      body: JSON.stringify(stockData)
+    });
+    if (!res.ok) throw new Error('Ошибка ' + res.status);
+    showStatus('Сохранено! Магазин обновлён ✓', 'success');
+  } catch (e) {
+    showStatus('Ошибка сохранения: ' + e.message, 'error');
+  }
+  btn.disabled = false;
+}
+
+// ========= UI =========
+function showStatus(msg, type) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg show ' + type;
+  if (type === 'success') setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  ['all','in','out'].forEach(x => {
+    document.getElementById('filter-' + x).classList.toggle('active', x === f);
+  });
+  renderProducts();
+}
+
+function bulkSet(val) {
+  const search = document.getElementById('admin-search').value.toLowerCase();
+  PRODUCTS.forEach(p => {
+    if (!search || p.name.toLowerCase().includes(search)) {
+      if (stockData[p.id]) stockData[p.id].inStock = val;
+    }
+  });
+  renderProducts();
+  updateStats();
+}
+
+function toggle(id) {
+  if (stockData[id]) stockData[id].inStock = !stockData[id].inStock;
+  updateStats();
+  const card = document.querySelector(`[data-id="${id}"]`);
+  if (card) {
+    const inStock = stockData[id].inStock;
+    card.classList.toggle('out', !inStock);
+    const inp = card.querySelector('input[type=checkbox]');
+    if (inp) inp.checked = inStock;
+    const lbl = card.querySelector('.toggle-label');
+    if (lbl) { lbl.textContent = inStock ? 'В НАЛИЧИИ' : 'НЕТ'; lbl.className = 'toggle-label ' + (inStock ? 'in' : 'out'); }
+  }
+}
+
+function updatePrice(id, field, value) {
+  if (!stockData[id]) return;
+  if (field === 'oldPrice' && (value === '' || value === '0')) {
+    stockData[id].oldPrice = null;
+  } else {
+    const num = parseFloat(value);
+    if (!isNaN(num) && num > 0) stockData[id][field] = num;
+  }
+  updatePricePreview(id);
+}
+
+function updatePricePreview(id) {
+  const preview = document.querySelector(`[data-id="${id}"] .price-preview`);
+  if (!preview) return;
+  const d = stockData[id];
+  const price = d.price || 0;
+  const oldPrice = d.oldPrice || null;
+  const hasDiscount = oldPrice && oldPrice > price;
+  if (hasDiscount) {
+    const disc = Math.round((1 - price / oldPrice) * 100);
+    preview.innerHTML = `Покупатель видит: <span class="pv">${price}</span> <span class="po">${oldPrice}</span> <span class="pd">-${disc}%</span> <span style="color:#666">(скидка, без наценки)</span>`;
+  } else {
+    preview.innerHTML = `Покупатель видит: <span class="pv">${calcPrice(price)}</span> <span style="color:#666">(+40% от ${price})</span>`;
+  }
+}
+
+function updateStats() {
+  const total = PRODUCTS.length;
+  const inCount = PRODUCTS.filter(p => stockData[p.id] && stockData[p.id].inStock).length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-in').textContent = inCount;
+  document.getElementById('stat-out').textContent = total - inCount;
+}
+
+function renderProducts() {
+  const search = document.getElementById('admin-search').value.toLowerCase();
+  const grid = document.getElementById('admin-product-grid');
+
+  const filtered = PRODUCTS.filter(p => {
+    const matchSearch = p.name.toLowerCase().includes(search);
+    const inStock = stockData[p.id] && stockData[p.id].inStock;
+    const matchFilter = currentFilter === 'all'
+      || (currentFilter === 'in' && inStock)
+      || (currentFilter === 'out' && !inStock);
+    return matchSearch && matchFilter;
+  });
+
+  grid.innerHTML = filtered.map(p => {
+    const d = stockData[p.id] || { inStock: true, price: p.price, oldPrice: null };
+    const inStock = d.inStock;
+    const price = d.price ?? p.price;
+    const oldPrice = d.oldPrice || null;
+    const hasDiscount = oldPrice && oldPrice > price;
+    const discPct = hasDiscount ? Math.round((1 - price / oldPrice) * 100) : 0;
+
+    const previewHTML = hasDiscount
+      ? `Покупатель видит: <span class="pv">${price}</span> <span class="po">${oldPrice}</span> <span class="pd">-${discPct}%</span> <span style="color:#666">(скидка, без наценки)</span>`
+      : `Покупатель видит: <span class="pv">${calcPrice(price)}</span> <span style="color:#666">(+40% от ${price})</span>`;
+
+    return `
+      <div class="product-card ${inStock ? '' : 'out'}" data-id="${p.id}">
+        <div class="product-card-top">
+          <img class="product-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.opacity=0.3">
+          <div class="product-info">
+            <div class="product-name-txt">${p.name}</div>
+            <div class="product-meta">
+              <span class="badge badge-rarity-${p.rarity}">${p.rarity.toUpperCase()}</span>
+              <span class="badge badge-cat">${p.category.toUpperCase()}</span>
+              ${p.weaponType === 'chroma' ? '<span class="badge badge-chroma">CHROMA</span>' : ''}
+              ${hasDiscount ? `<span class="discount-badge">-${discPct}%</span>` : ''}
+            </div>
+          </div>
+          <div class="toggle-wrap">
+            <label class="toggle">
+              <input type="checkbox" ${inStock ? 'checked' : ''} onchange="toggle('${p.id}')">
+              <span class="slider"></span>
+            </label>
+            <span class="toggle-label ${inStock ? 'in' : 'out'}">${inStock ? 'В НАЛИЧИИ' : 'НЕТ'}</span>
+          </div>
+        </div>
+
+        <div class="price-editor">
+          <div class="price-field">
+            <label>ЦЕНА</label>
+            <input class="price-input" type="number" min="1" value="${price}"
+              onchange="updatePrice('${p.id}', 'price', this.value)">
+          </div>
+          <div class="price-field">
+            <label>СТАРАЯ ЦЕНА (для скидки, необязательно)</label>
+            <input class="price-input" type="number" min="0" value="${oldPrice ?? ''}" placeholder="нет скидки"
+              onchange="updatePrice('${p.id}', 'oldPrice', this.value)">
+          </div>
+          <div class="price-preview">${previewHTML}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+setFilter('all');
+</script>
+</body>
+</html>
