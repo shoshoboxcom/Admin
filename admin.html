@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Панель управления — MM2 Shop</title>
+<title>MM2 Admin</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -18,28 +18,32 @@
     --red: #ff3c78;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
   body {
     font-family: 'Space Mono', monospace;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+    overflow-x: hidden;
   }
 
+  /* ===== LOGIN ===== */
   #login-screen {
     display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;
+    padding: 16px;
   }
 
   .login-box {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 48px;
-    width: 360px;
+    padding: 40px 32px;
+    width: 100%;
+    max-width: 360px;
     text-align: center;
   }
 
@@ -50,35 +54,34 @@
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
-  .login-sub { color: var(--muted); font-size: 12px; margin-bottom: 36px; letter-spacing: 2px; }
+  .login-sub { color: var(--muted); font-size: 11px; margin-bottom: 32px; letter-spacing: 2px; }
 
   .login-input {
     width: 100%;
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 10px;
     padding: 14px 16px;
     color: var(--text);
     font-family: 'Space Mono', monospace;
-    font-size: 14px;
-    margin-bottom: 16px;
+    font-size: 16px; /* 16px чтобы iOS не зумил */
+    margin-bottom: 14px;
     outline: none;
-    transition: border-color 0.2s;
     text-align: center;
     letter-spacing: 3px;
+    transition: border-color 0.2s;
   }
-
   .login-input:focus { border-color: var(--accent); }
 
   .login-btn {
     width: 100%;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     border: none;
-    border-radius: 8px;
-    padding: 14px;
+    border-radius: 10px;
+    padding: 15px;
     color: #fff;
     font-family: 'Syne', sans-serif;
     font-weight: 700;
@@ -87,242 +90,325 @@
     cursor: pointer;
     transition: opacity 0.2s;
   }
-
-  .login-btn:hover { opacity: 0.85; }
+  .login-btn:active { opacity: 0.8; }
   .login-error { color: var(--red); font-size: 12px; margin-top: 12px; display: none; }
 
+  /* ===== MAIN ===== */
   #main-panel { display: none; }
 
   header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 20px 32px;
+    padding: 14px 16px;
     border-bottom: 1px solid var(--border);
     background: var(--surface);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 200;
+    gap: 10px;
   }
 
   .header-left {
     font-family: 'Syne', sans-serif;
     font-weight: 800;
-    font-size: 20px;
+    font-size: 17px;
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    white-space: nowrap;
   }
 
-  .header-right { display: flex; align-items: center; gap: 16px; }
+  .header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
 
   .save-btn {
     background: linear-gradient(135deg, var(--accent), var(--accent2));
     border: none;
     border-radius: 8px;
-    padding: 10px 24px;
+    padding: 9px 16px;
     color: #fff;
     font-family: 'Syne', sans-serif;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 12px;
     letter-spacing: 1px;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.1s;
+    white-space: nowrap;
+    transition: opacity 0.2s;
   }
-
-  .save-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-  .save-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .save-btn:active { opacity: 0.8; }
+  .save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
   .logout-btn {
     background: transparent;
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: 9px 12px;
     color: var(--muted);
     font-family: 'Space Mono', monospace;
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
+    white-space: nowrap;
     transition: all 0.2s;
   }
+  .logout-btn:active { border-color: var(--red); color: var(--red); }
 
-  .logout-btn:hover { border-color: var(--red); color: var(--red); }
+  /* STATUS */
+  .status-bar {
+    padding: 10px 16px;
+    font-size: 12px;
+    text-align: center;
+    display: none;
+  }
+  .status-bar.success { background: rgba(0,232,122,0.1); color: var(--green); border-bottom: 1px solid rgba(0,232,122,0.15); }
+  .status-bar.error { background: rgba(255,60,120,0.1); color: var(--red); border-bottom: 1px solid rgba(255,60,120,0.15); }
+  .status-bar.loading { background: rgba(148,3,252,0.1); color: var(--accent); border-bottom: 1px solid rgba(148,3,252,0.15); }
+  .status-bar.show { display: block; }
 
-  .status-msg { font-size: 12px; padding: 8px 16px; border-radius: 6px; display: none; }
-  .status-msg.success { background: rgba(0,232,122,0.1); color: var(--green); border: 1px solid rgba(0,232,122,0.2); }
-  .status-msg.error { background: rgba(255,60,120,0.1); color: var(--red); border: 1px solid rgba(255,60,120,0.2); }
-  .status-msg.loading { background: rgba(148,3,252,0.1); color: var(--accent); border: 1px solid rgba(148,3,252,0.2); }
-  .status-msg.show { display: block; }
+  .container { padding: 16px; max-width: 900px; margin: 0 auto; }
 
-  .container { max-width: 1200px; margin: 0 auto; padding: 32px; }
+  /* STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
 
-  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
-  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px 24px; text-align: center; }
-  .stat-num { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 8px;
+    text-align: center;
+  }
+
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
   .stat-num.green { color: var(--green); }
   .stat-num.red { color: var(--red); }
   .stat-num.purple { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .stat-label { color: var(--muted); font-size: 11px; letter-spacing: 2px; }
+  .stat-label { color: var(--muted); font-size: 9px; letter-spacing: 1px; }
 
-  .toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+  /* TOOLBAR */
+  .toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
 
   .search-box {
-    flex: 1; min-width: 200px;
+    flex: 1;
+    min-width: 140px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: 10px 14px;
     color: var(--text);
     font-family: 'Space Mono', monospace;
-    font-size: 13px;
+    font-size: 14px;
     outline: none;
-    transition: border-color 0.2s;
   }
   .search-box:focus { border-color: var(--accent); }
 
-  .filter-btn {
+  .toolbar-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  .chip {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 16px;
+    border-radius: 20px;
+    padding: 8px 14px;
     color: var(--muted);
     font-family: 'Space Mono', monospace;
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
-    transition: all 0.2s;
     white-space: nowrap;
-  }
-  .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); }
-
-  .bulk-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 16px;
-    color: var(--muted);
-    font-family: 'Space Mono', monospace;
-    font-size: 12px;
-    cursor: pointer;
     transition: all 0.2s;
-    white-space: nowrap;
   }
-  .bulk-btn.green-btn:hover { border-color: var(--green); color: var(--green); }
-  .bulk-btn.red-btn:hover { border-color: var(--red); color: var(--red); }
+  .chip:active, .chip.active { border-color: var(--accent); color: var(--accent); background: rgba(148,3,252,0.08); }
+  .chip.green-chip:active { border-color: var(--green); color: var(--green); background: rgba(0,232,122,0.08); }
+  .chip.red-chip:active { border-color: var(--red); color: var(--red); background: rgba(255,60,120,0.08); }
 
-  .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+  /* PRODUCT GRID */
+  .product-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  @media (min-width: 600px) {
+    .product-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (min-width: 900px) {
+    .product-grid { grid-template-columns: repeat(3, 1fr); }
+  }
 
   .product-card {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 14px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    transition: border-color 0.2s, transform 0.15s;
+    gap: 10px;
+    transition: border-color 0.2s;
   }
-  .product-card:hover { border-color: var(--accent); transform: translateY(-1px); }
-  .product-card.out { opacity: 0.55; }
+  .product-card.out { opacity: 0.5; }
 
-  .product-card-top { display: flex; align-items: center; gap: 12px; width: 100%; }
+  /* Card top row */
+  .card-top { display: flex; align-items: center; gap: 10px; }
 
-  .product-img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: var(--bg); }
+  .product-img {
+    width: 54px;
+    height: 54px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--bg);
+  }
 
   .product-info { flex: 1; min-width: 0; }
-  .product-name-txt { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
-  .product-meta { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 
-  .badge { font-size: 9px; padding: 2px 7px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; }
-  .badge-rarity-godly { background: rgba(255,0,0,0.15); color: #ff5555; }
-  .badge-rarity-ancient { background: rgba(98,0,255,0.15); color: #9b6bff; }
-  .badge-rarity-unique { background: rgba(255,140,0,0.15); color: #ffb347; }
-  .badge-rarity-legendary { background: rgba(255,0,0,0.1); color: #ff6666; }
-  .badge-rarity-rare { background: rgba(38,192,0,0.15); color: #5dde5d; }
+  .product-name-txt {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 5px;
+  }
+
+  .badges { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+
+  .badge { font-size: 8px; padding: 2px 6px; border-radius: 4px; font-weight: 700; letter-spacing: 0.5px; white-space: nowrap; }
+  .badge-rarity-godly    { background: rgba(255,0,0,0.15);   color: #ff5555; }
+  .badge-rarity-ancient  { background: rgba(98,0,255,0.15);  color: #9b6bff; }
+  .badge-rarity-unique   { background: rgba(255,140,0,0.15); color: #ffb347; }
+  .badge-rarity-legendary{ background: rgba(255,0,0,0.1);    color: #ff6666; }
+  .badge-rarity-rare     { background: rgba(38,192,0,0.15);  color: #5dde5d; }
   .badge-rarity-uncommon { background: rgba(0,145,255,0.15); color: #5ab4ff; }
-  .badge-rarity-common { background: rgba(128,128,128,0.15); color: #aaa; }
-  .badge-rarity-vintage { background: rgba(255,204,0,0.15); color: #ffd740; }
-  .badge-cat { background: rgba(148,3,252,0.15); color: #c060ff; }
-  .badge-chroma { background: rgba(255,60,120,0.15); color: var(--accent2); }
-  .discount-badge { display: inline-block; background: rgba(255,215,0,0.15); color: #ffd740; border: 1px solid rgba(255,215,0,0.3); font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; }
+  .badge-rarity-common   { background: rgba(128,128,128,0.15);color: #aaa; }
+  .badge-rarity-vintage  { background: rgba(255,204,0,0.15); color: #ffd740; }
+  .badge-rarity-chroma   { background: rgba(255,60,120,0.15);color: var(--accent2); }
+  .badge-cat  { background: rgba(148,3,252,0.15); color: #c060ff; }
+  .badge-disc { background: rgba(255,215,0,0.15); color: #ffd740; border: 1px solid rgba(255,215,0,0.25); }
 
-  .price-editor {
+  .toggle-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; flex-shrink: 0; }
+  .toggle { position: relative; width: 46px; height: 25px; cursor: pointer; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: var(--border); border-radius: 25px; transition: 0.25s; }
+  .slider::before { content: ''; position: absolute; width: 17px; height: 17px; left: 4px; bottom: 4px; background: var(--muted); border-radius: 50%; transition: 0.25s; }
+  input:checked + .slider { background: rgba(0,232,122,0.2); border: 1px solid var(--green); }
+  input:checked + .slider::before { transform: translateX(21px); background: var(--green); }
+  .toggle-lbl { font-size: 8px; letter-spacing: 1px; font-weight: 700; }
+  .toggle-lbl.in  { color: var(--green); }
+  .toggle-lbl.out { color: var(--red); }
+
+  /* SELECTORS ROW */
+  .selectors-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .sel-field label {
+    display: block;
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+
+  .sel-select {
     width: 100%;
     background: var(--bg);
     border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23555570' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+  }
+  .sel-select:focus { border-color: var(--accent); }
+
+  /* PRICE EDITOR */
+  .price-editor {
+    background: var(--bg);
+    border: 1px solid var(--border);
     border-radius: 8px;
-    padding: 10px 12px;
+    padding: 10px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 8px;
   }
 
-  .price-field label { display: block; font-size: 9px; color: var(--muted); letter-spacing: 1.5px; margin-bottom: 4px; }
+  .price-field label {
+    display: block;
+    font-size: 8px;
+    color: var(--muted);
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
 
   .price-input {
     width: 100%;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 6px;
-    padding: 6px 10px;
+    padding: 8px 10px;
     color: var(--text);
     font-family: 'Space Mono', monospace;
-    font-size: 12px;
+    font-size: 13px;
     outline: none;
     transition: border-color 0.2s;
   }
   .price-input:focus { border-color: var(--accent); }
 
-  .price-preview { font-size: 10px; color: var(--muted); margin-top: 2px; grid-column: 1/-1; line-height: 1.6; }
-  .price-preview .pv { color: var(--green); font-weight: 700; }
-  .price-preview .po { color: var(--red); text-decoration: line-through; }
-  .price-preview .pd { color: #ffd740; font-weight: 700; }
-
-  .toggle-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
-  .toggle { position: relative; width: 48px; height: 26px; cursor: pointer; }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .slider { position: absolute; inset: 0; background: var(--border); border-radius: 26px; transition: 0.25s; }
-  .slider::before { content: ''; position: absolute; width: 18px; height: 18px; left: 4px; bottom: 4px; background: var(--muted); border-radius: 50%; transition: 0.25s; }
-  input:checked + .slider { background: rgba(0,232,122,0.25); border: 1px solid var(--green); }
-  input:checked + .slider::before { transform: translateX(22px); background: var(--green); }
-  .toggle-label { font-size: 9px; letter-spacing: 1px; font-weight: 700; }
-  .toggle-label.in { color: var(--green); }
-  .toggle-label.out { color: var(--red); }
-
-  @media (max-width: 600px) {
-    .container { padding: 16px; }
-    .stats-row { grid-template-columns: 1fr 1fr; }
-    header { padding: 14px 16px; }
-    .price-editor { grid-template-columns: 1fr; }
+  .price-preview {
+    font-size: 10px;
+    color: var(--muted);
+    grid-column: 1/-1;
+    line-height: 1.6;
+    padding-top: 2px;
   }
+  .price-preview .pv  { color: var(--green); font-weight: 700; }
+  .price-preview .po  { color: var(--red); text-decoration: line-through; }
+  .price-preview .pd  { color: #ffd740; font-weight: 700; }
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">MM2 SHOP</div>
     <div class="login-sub">ADMIN PANEL</div>
-    <input type="password" class="login-input" id="password-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <input type="password" class="login-input" id="password-input" placeholder="••••••••"
+      onkeydown="if(event.key==='Enter')doLogin()">
     <button class="login-btn" onclick="doLogin()">ВОЙТИ</button>
     <div class="login-error" id="login-error">Неверный пароль</div>
   </div>
 </div>
 
+<!-- MAIN -->
 <div id="main-panel">
   <header>
     <div class="header-left">⚡ MM2 ADMIN</div>
     <div class="header-right">
-      <div class="status-msg" id="status-msg"></div>
       <button class="save-btn" onclick="saveToJsonBin()" id="save-btn">💾 СОХРАНИТЬ</button>
       <button class="logout-btn" onclick="doLogout()">ВЫЙТИ</button>
     </div>
   </header>
 
+  <div class="status-bar" id="status-bar"></div>
+
   <div class="container">
 
+    <!-- STATS -->
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-num purple" id="stat-total">0</div>
-        <div class="stat-label">ВСЕГО ТОВАРОВ</div>
+        <div class="stat-label">ТОВАРОВ</div>
       </div>
       <div class="stat-card">
         <div class="stat-num green" id="stat-in">0</div>
@@ -330,19 +416,23 @@
       </div>
       <div class="stat-card">
         <div class="stat-num red" id="stat-out">0</div>
-        <div class="stat-label">НЕТ В НАЛИЧИИ</div>
+        <div class="stat-label">НЕТ</div>
       </div>
     </div>
 
+    <!-- TOOLBAR -->
     <div class="toolbar">
-      <input class="search-box" id="admin-search" placeholder="🔍 Поиск товара..." oninput="renderProducts()">
-      <button class="filter-btn active" id="filter-all" onclick="setFilter('all')">ВСЕ</button>
-      <button class="filter-btn" id="filter-in" onclick="setFilter('in')">В НАЛИЧИИ</button>
-      <button class="filter-btn" id="filter-out" onclick="setFilter('out')">НЕТ</button>
-      <button class="bulk-btn green-btn" onclick="bulkSet(true)">✅ ВСЕ В НАЛИЧИИ</button>
-      <button class="bulk-btn red-btn" onclick="bulkSet(false)">❌ ВСЕХ УБРАТЬ</button>
+      <input class="search-box" id="admin-search" placeholder="🔍 Поиск..." oninput="renderProducts()">
+      <div class="toolbar-btns">
+        <button class="chip active" id="filter-all" onclick="setFilter('all')">ВСЕ</button>
+        <button class="chip" id="filter-in" onclick="setFilter('in')">ЕСТЬ</button>
+        <button class="chip" id="filter-out" onclick="setFilter('out')">НЕТ</button>
+        <button class="chip green-chip" onclick="bulkSet(true)">✅ ВСЕ</button>
+        <button class="chip red-chip" onclick="bulkSet(false)">❌ УБРАТЬ</button>
+      </div>
     </div>
 
+    <!-- PRODUCT GRID -->
     <div class="product-grid" id="admin-product-grid"></div>
 
   </div>
@@ -358,26 +448,30 @@ const JSONBIN_BIN_ID  = '6996ee4dd0ea881f40c692c7';
 
 // ========= ТОВАРЫ =========
 // Добавляй товары сюда.
-// price — запасная цена на случай если JSONBin недоступен.
-// Цены и скидки меняются через интерфейс и сохраняются в JSONBin.
+// price — запасная цена (если JSONBin недоступен).
+// Все цены, скидки, редкость, тип — меняются в интерфейсе.
 const PRODUCTS = [
   {
     id: 'sweet',
     name: 'Sweet',
     category: 'knife',
     rarity: 'godly',
-    weaponType: '',
+    weaponType: 'chroma',
     image: 'https://bit.ly/4aGGm5I',
     price: 1204,
   },
-  // Добавляй новые товары сюда по образцу выше
+  // Добавляй новые товары сюда по образцу
 ];
 
 let stockData = {};
 let currentFilter = 'all';
 
+// Доступные редкости и типы
+const RARITIES = ['common','uncommon','rare','legendary','godly','ancient','vintage','chroma'];
+const CATEGORIES = ['knife','gun'];
+
 // ========= РАСЧЁТ ЦЕНЫ +40% =========
-function calcPrice(base) {
+function calcMarkup(base) {
   const p = base * 1.40;
   if (p < 10) return Math.ceil(p);
   if (p < 100) return Math.ceil(p / 5) * 5;
@@ -410,9 +504,17 @@ function doLogout() {
   document.getElementById('password-input').value = '';
 }
 
+// ========= STATUS =========
+function showStatus(msg, type) {
+  const el = document.getElementById('status-bar');
+  el.textContent = msg;
+  el.className = 'status-bar show ' + type;
+  if (type === 'success') setTimeout(() => el.classList.remove('show'), 3000);
+}
+
 // ========= JSONBIN =========
 async function loadFromJsonBin() {
-  showStatus('Загрузка данных...', 'loading');
+  showStatus('Загрузка...', 'loading');
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
       headers: { 'X-Master-Key': JSONBIN_API_KEY }
@@ -420,14 +522,21 @@ async function loadFromJsonBin() {
     if (!res.ok) throw new Error('Ошибка ' + res.status);
     const data = await res.json();
     stockData = data.record || {};
-    showStatus('Данные загружены ✓', 'success');
+    showStatus('Загружено ✓', 'success');
   } catch (e) {
-    showStatus('Не удалось загрузить: ' + e.message, 'error');
+    showStatus('Ошибка загрузки: ' + e.message, 'error');
   }
-  // Инициализируем новые товары которых ещё нет в JSONBin
+  // Инициализируем новые товары
   PRODUCTS.forEach(p => {
     if (!stockData[p.id]) {
-      stockData[p.id] = { inStock: true, price: p.price, oldPrice: null };
+      stockData[p.id] = {
+        inStock: true,
+        price: p.price,
+        oldPrice: null,
+        rarity: p.rarity || 'godly',
+        category: p.category || 'knife',
+        weaponType: p.weaponType || ''
+      };
     }
   });
   renderProducts();
@@ -447,19 +556,12 @@ async function saveToJsonBin() {
     if (!res.ok) throw new Error('Ошибка ' + res.status);
     showStatus('Сохранено! Магазин обновлён ✓', 'success');
   } catch (e) {
-    showStatus('Ошибка сохранения: ' + e.message, 'error');
+    showStatus('Ошибка: ' + e.message, 'error');
   }
   btn.disabled = false;
 }
 
 // ========= UI =========
-function showStatus(msg, type) {
-  const el = document.getElementById('status-msg');
-  el.textContent = msg;
-  el.className = 'status-msg show ' + type;
-  if (type === 'success') setTimeout(() => el.classList.remove('show'), 3500);
-}
-
 function setFilter(f) {
   currentFilter = f;
   ['all','in','out'].forEach(x => {
@@ -488,34 +590,63 @@ function toggle(id) {
     card.classList.toggle('out', !inStock);
     const inp = card.querySelector('input[type=checkbox]');
     if (inp) inp.checked = inStock;
-    const lbl = card.querySelector('.toggle-label');
-    if (lbl) { lbl.textContent = inStock ? 'В НАЛИЧИИ' : 'НЕТ'; lbl.className = 'toggle-label ' + (inStock ? 'in' : 'out'); }
+    const lbl = card.querySelector('.toggle-lbl');
+    if (lbl) { lbl.textContent = inStock ? 'ЕСТЬ' : 'НЕТ'; lbl.className = 'toggle-lbl ' + (inStock ? 'in' : 'out'); }
   }
 }
 
-function updatePrice(id, field, value) {
+function updateField(id, field, value) {
   if (!stockData[id]) return;
-  if (field === 'oldPrice' && (value === '' || value === '0')) {
-    stockData[id].oldPrice = null;
+  if (field === 'price' || field === 'oldPrice') {
+    if (field === 'oldPrice' && (value === '' || value === '0')) {
+      stockData[id].oldPrice = null;
+    } else {
+      const num = parseFloat(value);
+      if (!isNaN(num) && num > 0) stockData[id][field] = num;
+    }
+    updatePricePreview(id);
   } else {
-    const num = parseFloat(value);
-    if (!isNaN(num) && num > 0) stockData[id][field] = num;
+    stockData[id][field] = value;
+    // Обновляем бейджи в карточке
+    updateBadges(id);
   }
-  updatePricePreview(id);
+}
+
+function updateBadges(id) {
+  const card = document.querySelector(`[data-id="${id}"]`);
+  if (!card) return;
+  const d = stockData[id];
+  const badgesEl = card.querySelector('.badges');
+  if (badgesEl) {
+    const discPct = (d.oldPrice && d.oldPrice > d.price) ? Math.round((1 - d.price / d.oldPrice) * 100) : 0;
+    badgesEl.innerHTML = buildBadges(d.rarity, d.category, d.weaponType, discPct);
+  }
+}
+
+function buildBadges(rarity, category, weaponType, discPct) {
+  let html = `<span class="badge badge-rarity-${rarity}">${rarity.toUpperCase()}</span>`;
+  html += `<span class="badge badge-cat">${category.toUpperCase()}</span>`;
+  if (weaponType === 'chroma') html += `<span class="badge badge-rarity-chroma">CHROMA</span>`;
+  if (discPct > 0) html += `<span class="badge badge-disc">-${discPct}%</span>`;
+  return html;
 }
 
 function updatePricePreview(id) {
   const preview = document.querySelector(`[data-id="${id}"] .price-preview`);
   if (!preview) return;
   const d = stockData[id];
-  const price = d.price || 0;
+  const price    = d.price    || 0;
   const oldPrice = d.oldPrice || null;
-  const hasDiscount = oldPrice && oldPrice > price;
-  if (hasDiscount) {
+  const hasDisc  = oldPrice && oldPrice > price;
+
+  if (hasDisc) {
     const disc = Math.round((1 - price / oldPrice) * 100);
-    preview.innerHTML = `Покупатель видит: <span class="pv">${price}</span> <span class="po">${oldPrice}</span> <span class="pd">-${disc}%</span> <span style="color:#666">(скидка, без наценки)</span>`;
+    preview.innerHTML = `Покупатель: <span class="pv">${price}</span> <span class="po">${oldPrice}</span> <span class="pd">-${disc}%</span> <span style="color:#444">(без наценки)</span>`;
+    // Обновляем бейдж скидки
+    updateBadges(id);
   } else {
-    preview.innerHTML = `Покупатель видит: <span class="pv">${calcPrice(price)}</span> <span style="color:#666">(+40% от ${price})</span>`;
+    preview.innerHTML = `Покупатель: <span class="pv">${calcMarkup(price)}</span> <span style="color:#444">(+40% от ${price})</span>`;
+    updateBadges(id);
   }
 }
 
@@ -527,66 +658,95 @@ function updateStats() {
   document.getElementById('stat-out').textContent = total - inCount;
 }
 
+// Строим опции для select
+function rarityOptions(selected) {
+  return RARITIES.map(r =>
+    `<option value="${r}" ${r === selected ? 'selected' : ''}>${r.charAt(0).toUpperCase() + r.slice(1)}</option>`
+  ).join('');
+}
+
+function categoryOptions(selected) {
+  return CATEGORIES.map(c =>
+    `<option value="${c}" ${c === selected ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1)}</option>`
+  ).join('');
+}
+
 function renderProducts() {
   const search = document.getElementById('admin-search').value.toLowerCase();
-  const grid = document.getElementById('admin-product-grid');
+  const grid   = document.getElementById('admin-product-grid');
 
   const filtered = PRODUCTS.filter(p => {
     const matchSearch = p.name.toLowerCase().includes(search);
     const inStock = stockData[p.id] && stockData[p.id].inStock;
     const matchFilter = currentFilter === 'all'
-      || (currentFilter === 'in' && inStock)
+      || (currentFilter === 'in'  && inStock)
       || (currentFilter === 'out' && !inStock);
     return matchSearch && matchFilter;
   });
 
   grid.innerHTML = filtered.map(p => {
-    const d = stockData[p.id] || { inStock: true, price: p.price, oldPrice: null };
-    const inStock = d.inStock;
-    const price = d.price ?? p.price;
-    const oldPrice = d.oldPrice || null;
-    const hasDiscount = oldPrice && oldPrice > price;
-    const discPct = hasDiscount ? Math.round((1 - price / oldPrice) * 100) : 0;
+    const d = stockData[p.id] || { inStock: true, price: p.price, oldPrice: null, rarity: p.rarity, category: p.category, weaponType: p.weaponType || '' };
+    const inStock   = d.inStock;
+    const price     = d.price    ?? p.price;
+    const oldPrice  = d.oldPrice || null;
+    const rarity    = d.rarity   || p.rarity || 'godly';
+    const category  = d.category || p.category || 'knife';
+    const weaponType= d.weaponType !== undefined ? d.weaponType : (p.weaponType || '');
+    const hasDisc   = oldPrice && oldPrice > price;
+    const discPct   = hasDisc ? Math.round((1 - price / oldPrice) * 100) : 0;
 
-    const previewHTML = hasDiscount
-      ? `Покупатель видит: <span class="pv">${price}</span> <span class="po">${oldPrice}</span> <span class="pd">-${discPct}%</span> <span style="color:#666">(скидка, без наценки)</span>`
-      : `Покупатель видит: <span class="pv">${calcPrice(price)}</span> <span style="color:#666">(+40% от ${price})</span>`;
+    const previewHTML = hasDisc
+      ? `Покупатель: <span class="pv">${price}</span> <span class="po">${oldPrice}</span> <span class="pd">-${discPct}%</span> <span style="color:#444">(без наценки)</span>`
+      : `Покупатель: <span class="pv">${calcMarkup(price)}</span> <span style="color:#444">(+40% от ${price})</span>`;
 
     return `
       <div class="product-card ${inStock ? '' : 'out'}" data-id="${p.id}">
-        <div class="product-card-top">
-          <img class="product-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.opacity=0.3">
+
+        <div class="card-top">
+          <img class="product-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.opacity=0.2">
           <div class="product-info">
             <div class="product-name-txt">${p.name}</div>
-            <div class="product-meta">
-              <span class="badge badge-rarity-${p.rarity}">${p.rarity.toUpperCase()}</span>
-              <span class="badge badge-cat">${p.category.toUpperCase()}</span>
-              ${p.weaponType === 'chroma' ? '<span class="badge badge-chroma">CHROMA</span>' : ''}
-              ${hasDiscount ? `<span class="discount-badge">-${discPct}%</span>` : ''}
-            </div>
+            <div class="badges">${buildBadges(rarity, category, weaponType, discPct)}</div>
           </div>
           <div class="toggle-wrap">
             <label class="toggle">
               <input type="checkbox" ${inStock ? 'checked' : ''} onchange="toggle('${p.id}')">
               <span class="slider"></span>
             </label>
-            <span class="toggle-label ${inStock ? 'in' : 'out'}">${inStock ? 'В НАЛИЧИИ' : 'НЕТ'}</span>
+            <span class="toggle-lbl ${inStock ? 'in' : 'out'}">${inStock ? 'ЕСТЬ' : 'НЕТ'}</span>
+          </div>
+        </div>
+
+        <div class="selectors-row">
+          <div class="sel-field">
+            <label>ТИП ОРУЖИЯ</label>
+            <select class="sel-select" onchange="updateField('${p.id}', 'category', this.value)">
+              ${categoryOptions(category)}
+            </select>
+          </div>
+          <div class="sel-field">
+            <label>РЕДКОСТЬ</label>
+            <select class="sel-select" onchange="updateField('${p.id}', 'rarity', this.value)">
+              ${rarityOptions(rarity)}
+            </select>
           </div>
         </div>
 
         <div class="price-editor">
           <div class="price-field">
-            <label>ЦЕНА</label>
-            <input class="price-input" type="number" min="1" value="${price}"
-              onchange="updatePrice('${p.id}', 'price', this.value)">
+            <label>ЦЕНА (+40% на сайте)</label>
+            <input class="price-input" type="number" min="1" inputmode="numeric"
+              value="${price}" onchange="updateField('${p.id}', 'price', this.value)">
           </div>
           <div class="price-field">
-            <label>СТАРАЯ ЦЕНА (для скидки, необязательно)</label>
-            <input class="price-input" type="number" min="0" value="${oldPrice ?? ''}" placeholder="нет скидки"
-              onchange="updatePrice('${p.id}', 'oldPrice', this.value)">
+            <label>СТАРАЯ ЦЕНА (скидка)</label>
+            <input class="price-input" type="number" min="0" inputmode="numeric"
+              value="${oldPrice ?? ''}" placeholder="нет скидки"
+              onchange="updateField('${p.id}', 'oldPrice', this.value)">
           </div>
           <div class="price-preview">${previewHTML}</div>
         </div>
+
       </div>
     `;
   }).join('');
