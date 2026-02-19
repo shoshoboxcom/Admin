@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Панель управления — MM2 Shop</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --border: #1e1e2e;
+    --accent: #9403fc;
+    --accent2: #ff3c78;
+    --text: #e8e8f0;
+    --muted: #555570;
+    --green: #00e87a;
+    --red: #ff3c78;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Space Mono', monospace;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* LOGIN */
+  #login-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: var(--bg);
+  }
+
+  .login-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px;
+    width: 360px;
+    text-align: center;
+  }
+
+  .login-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+
+  .login-sub {
+    color: var(--muted);
+    font-size: 12px;
+    margin-bottom: 36px;
+    letter-spacing: 2px;
+  }
+
+  .login-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 14px;
+    margin-bottom: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: center;
+    letter-spacing: 3px;
+  }
+
+  .login-input:focus { border-color: var(--accent); }
+
+  .login-btn {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 8px;
+    padding: 14px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .login-btn:hover { opacity: 0.85; }
+
+  .login-error {
+    color: var(--red);
+    font-size: 12px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* MAIN PANEL */
+  #main-panel { display: none; }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .save-btn {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    color: #fff;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+
+  .save-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .save-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .logout-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .logout-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .status-msg {
+    font-size: 12px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    display: none;
+  }
+
+  .status-msg.success { background: rgba(0,232,122,0.1); color: var(--green); border: 1px solid rgba(0,232,122,0.2); }
+  .status-msg.error { background: rgba(255,60,120,0.1); color: var(--red); border: 1px solid rgba(255,60,120,0.2); }
+  .status-msg.loading { background: rgba(148,3,252,0.1); color: var(--accent); border: 1px solid rgba(148,3,252,0.2); }
+  .status-msg.show { display: block; }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+
+  /* STATS */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-num.green { color: var(--green); }
+  .stat-num.red { color: var(--red); }
+  .stat-num.purple { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat-num.orange { color: #ffb347; }
+
+  .stat-label { color: var(--muted); font-size: 10px; letter-spacing: 2px; }
+
+  /* TOOLBAR */
+  .toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .search-box {
+    flex: 1;
+    min-width: 200px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .search-box:focus { border-color: var(--accent); }
+
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  .bulk-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 16px;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .bulk-btn.green-btn:hover { border-color: var(--green); color: var(--green); }
+  .bulk-btn.red-btn:hover { border-color: var(--red); color: var(--red); }
+
+  /* PRODUCT GRID */
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 12px;
+  }
+
+  .product-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+
+  .product-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .product-card.out { opacity: 0.6; }
+  .product-card.has-discount { border-color: rgba(255, 183, 0, 0.35); }
+
+  .card-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .product-img {
+    width: 56px;
+    height: 56px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: var(--bg);
+  }
+
+  .product-info { flex: 1; min-width: 0; }
+
+  .product-name-txt {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 4px;
+  }
+
+  .product-meta {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 9px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+
+  .badge-rarity-godly { background: rgba(255,0,0,0.15); color: #ff5555; }
+  .badge-rarity-ancient { background: rgba(98,0,255,0.15); color: #9b6bff; }
+  .badge-rarity-unique { background: rgba(255,140,0,0.15); color: #ffb347; }
+  .badge-rarity-legendary { background: rgba(255,0,0,0.1); color: #ff6666; }
+  .badge-rarity-rare { background: rgba(38,192,0,0.15); color: #5dde5d; }
+  .badge-rarity-uncommon { background: rgba(0,145,255,0.15); color: #5ab4ff; }
+  .badge-rarity-common { background: rgba(128,128,128,0.15); color: #aaa; }
+  .badge-rarity-vintage { background: rgba(255,204,0,0.15); color: #ffd740; }
+  .badge-cat { background: rgba(148,3,252,0.15); color: #c060ff; }
+  .badge-chroma { background: rgba(255,60,120,0.15); color: var(--accent2); }
+  .badge-discount { background: rgba(255,183,0,0.15); color: #ffb300; }
+
+  /* TOGGLE */
+  .toggle-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .toggle {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    cursor: pointer;
+  }
+
+  .toggle input { opacity: 0; width: 0; height: 0; }
+
+  .slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 26px;
+    transition: 0.25s;
+  }
+
+  .slider::before {
+    content: '';
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 4px;
+    bottom: 4px;
+    background: var(--muted);
+    border-radius: 50%;
+    transition: 0.25s;
+  }
+
+  input:checked + .slider { background: rgba(0,232,122,0.25); border: 1px solid var(--green); }
+  input:checked + .slider::before { transform: translateX(22px); background: var(--green); }
+
+  .toggle-label {
+    font-size: 9px;
+    letter-spacing: 1px;
+    font-weight: 700;
+  }
+
+  .toggle-label.in { color: var(--green); }
+  .toggle-label.out { color: var(--red); }
+
+  /* PRICE SECTION */
+  .price-section {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    align-items: end;
+  }
+
+  .price-field label {
+    display: block;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+  }
+
+  .price-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .price-input:focus { border-color: var(--accent); }
+
+  .price-input.old-price-input { border-color: rgba(255,183,0,0.3); }
+  .price-input.old-price-input:focus { border-color: #ffb300; }
+
+  .price-display {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .price-display .final { color: var(--green); font-weight: 700; }
+  .price-display .crossed { color: var(--red); text-decoration: line-through; }
+
+  .clear-discount-btn {
+    background: transparent;
+    border: 1px solid rgba(255,60,120,0.3);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--red);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  .clear-discount-btn:hover { border-color: var(--red); background: rgba(255,60,120,0.05); }
+
+  /* INFO BANNER */
+  .info-banner {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .info-banner .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    flex-shrink: 0;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  .info-banner strong { color: var(--text); }
+
+  @media (max-width: 600px) {
+    .container { padding: 16px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    header { padding: 14px 16px; }
+    .product-grid { grid-template-columns: 1fr; }
+    .price-section { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">MM2 SHOP</div>
+    <div class="login-sub">ADMIN PANEL</div>
+    <input type="password" class="login-input" id="password-input" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">ВОЙТИ</button>
+    <div class="login-error" id="login-error">Неверный пароль</div>
+  </div>
+</div>
+
+<!-- MAIN PANEL -->
+<div id="main-panel">
+  <header>
+    <div class="header-left">⚡ MM2 ADMIN</div>
+    <div class="header-right">
+      <div class="status-msg" id="status-msg"></div>
+      <button class="save-btn" onclick="saveToJsonBin()" id="save-btn">💾 СОХРАНИТЬ</button>
+      <button class="logout-btn" onclick="doLogout()">ВЫЙТИ</button>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- INFO BANNER -->
+    <div class="info-banner">
+      <div class="dot"></div>
+      <div>
+        <strong>Подключено к JSONBin</strong> — API Key и Bin ID уже настроены внутри файла.
+        Все изменения сохраняются нажатием кнопки <strong>💾 СОХРАНИТЬ</strong>.
+        Цены вводятся как базовые — магазин применяет наценку ×1.4 автоматически.
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-num purple" id="stat-total">0</div>
+        <div class="stat-label">ВСЕГО ТОВАРОВ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num green" id="stat-in">0</div>
+        <div class="stat-label">В НАЛИЧИИ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num red" id="stat-out">0</div>
+        <div class="stat-label">НЕТ В НАЛИЧИИ</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num orange" id="stat-discount">0</div>
+        <div class="stat-label">СО СКИДКОЙ</div>
+      </div>
+    </div>
+
+    <!-- TOOLBAR -->
+    <div class="toolbar">
+      <input class="search-box" id="admin-search" placeholder="🔍 Поиск товара..." oninput="renderProducts()">
+      <button class="filter-btn" id="filter-all" onclick="setFilter('all')">ВСЕ</button>
+      <button class="filter-btn" id="filter-in" onclick="setFilter('in')">В НАЛИЧИИ</button>
+      <button class="filter-btn" id="filter-out" onclick="setFilter('out')">НЕТ</button>
+      <button class="filter-btn" id="filter-discount" onclick="setFilter('discount')">СО СКИДКОЙ</button>
+      <button class="bulk-btn green-btn" onclick="bulkSet(true)">✅ ВСЕ В НАЛИЧИИ</button>
+      <button class="bulk-btn red-btn" onclick="bulkSet(false)">❌ ВСЕХ УБРАТЬ</button>
+    </div>
+
+    <!-- PRODUCT GRID -->
+    <div class="product-grid" id="admin-product-grid"></div>
+
+  </div>
+</div>
+
+<script>
+// =============================================
+// 🔑 НАСТРОЙКИ — НЕ НУЖНО ВВОДИТЬ КАЖДЫЙ РАЗ
+// =============================================
+const JSONBIN_API_KEY = '$2a$10$aeI1awKXrn8g94Y10v5BUeP.zPPFcLoyrt0AgEuCTDBe7XBqSo.ne';
+const JSONBIN_BIN_ID  = '6996ee4dd0ea881f40c692c7';
+// =============================================
+
+// ========= ПАРОЛЬ =========
+const ADMIN_PASSWORD = 'admin123';
+
+// ========= ТОВАРЫ =========
+const PRODUCTS = [
+  {
+    id: 'sweet',
+    name: 'Sweet',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://bit.ly/4aGGm5I',
+    price: 1204,
+    oldPrice: 1699,
+  },
+  // Добавляй новые товары сюда по образцу выше
+];
+
+// ========= СОСТОЯНИЕ =========
+// stockData хранит: { [id]: { inStock: bool, price: number|null, oldPrice: number|null } }
+let stockData = {};
+let currentFilter = 'all';
+
+// ========= HELPERS =========
+function getItem(id) {
+  if (!stockData[id] || typeof stockData[id] !== 'object') {
+    // Совместимость со старым форматом (только boolean)
+    const oldVal = stockData[id];
+    stockData[id] = { inStock: typeof oldVal === 'boolean' ? oldVal : true, price: null, oldPrice: null };
+  }
+  return stockData[id];
+}
+
+function calculatePrice(basePrice) {
+  const p = basePrice * 1.40;
+  if (p < 10) return Math.ceil(p);
+  if (p < 100) return Math.ceil(p / 5) * 5;
+  if (p < 1000) {
+    const last = Math.floor(p) % 10;
+    const base = Math.floor(p / 10) * 10;
+    if (last === 0) return base;
+    else if (last <= 5) return base + 5;
+    else return base + 10;
+  }
+  return Math.ceil(p / 10) * 10;
+}
+
+// ========= LOGIN =========
+function doLogin() {
+  const val = document.getElementById('password-input').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-panel').style.display = 'block';
+    loadFromJsonBin();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('password-input').value = '';
+  }
+}
+
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('main-panel').style.display = 'none';
+  document.getElementById('password-input').value = '';
+}
+
+// ========= JSONBIN =========
+async function loadFromJsonBin() {
+  showStatus('Загрузка данных...', 'loading');
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': JSONBIN_API_KEY }
+    });
+    if (!res.ok) throw new Error('Ошибка ' + res.status);
+    const data = await res.json();
+    const raw = data.record || {};
+
+    // Нормализуем данные: поддержка старого формата { id: bool } и нового { id: {inStock, price, oldPrice} }
+    PRODUCTS.forEach(p => {
+      if (raw[p.id] === undefined) {
+        stockData[p.id] = { inStock: true, price: null, oldPrice: null };
+      } else if (typeof raw[p.id] === 'boolean') {
+        stockData[p.id] = { inStock: raw[p.id], price: null, oldPrice: null };
+      } else {
+        stockData[p.id] = {
+          inStock: raw[p.id].inStock !== undefined ? raw[p.id].inStock : true,
+          price: raw[p.id].price || null,
+          oldPrice: raw[p.id].oldPrice || null,
+        };
+      }
+    });
+
+    showStatus('Данные загружены ✓', 'success');
+  } catch (e) {
+    PRODUCTS.forEach(p => {
+      if (!stockData[p.id]) stockData[p.id] = { inStock: true, price: null, oldPrice: null };
+    });
+    showStatus('Не удалось загрузить: ' + e.message, 'error');
+  }
+  renderProducts();
+  updateStats();
+}
+
+async function saveToJsonBin() {
+  // Перед сохранением считываем все цены из инпутов
+  PRODUCTS.forEach(p => {
+    const priceEl = document.getElementById(`price-${p.id}`);
+    const oldPriceEl = document.getElementById(`oldprice-${p.id}`);
+    const item = getItem(p.id);
+    if (priceEl) {
+      const v = parseFloat(priceEl.value);
+      item.price = (!isNaN(v) && v > 0) ? v : null;
+    }
+    if (oldPriceEl) {
+      const v = parseFloat(oldPriceEl.value);
+      item.oldPrice = (!isNaN(v) && v > 0) ? v : null;
+    }
+  });
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  showStatus('Сохранение...', 'loading');
+
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': JSONBIN_API_KEY
+      },
+      body: JSON.stringify(stockData)
+    });
+    if (!res.ok) throw new Error('Ошибка ' + res.status);
+    showStatus('Сохранено! Магазин обновлён ✓', 'success');
+    updateStats();
+    renderProducts();
+  } catch (e) {
+    showStatus('Ошибка сохранения: ' + e.message, 'error');
+  }
+  btn.disabled = false;
+}
+
+// ========= UI =========
+function showStatus(msg, type) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg show ' + type;
+  if (type === 'success') setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  ['all','in','out','discount'].forEach(x => {
+    document.getElementById('filter-' + x).classList.toggle('active', x === f);
+  });
+  renderProducts();
+}
+
+function bulkSet(val) {
+  const search = document.getElementById('admin-search').value.toLowerCase();
+  PRODUCTS.forEach(p => {
+    if (!search || p.name.toLowerCase().includes(search)) {
+      getItem(p.id).inStock = val;
+    }
+  });
+  renderProducts();
+  updateStats();
+}
+
+function toggle(id) {
+  const item = getItem(id);
+  item.inStock = !item.inStock;
+  updateStats();
+  const card = document.querySelector(`[data-id="${id}"]`);
+  if (card) {
+    card.classList.toggle('out', !item.inStock);
+    const inp = card.querySelector('input[type=checkbox]');
+    if (inp) inp.checked = item.inStock;
+    const lbl = card.querySelector('.toggle-label');
+    if (lbl) { lbl.textContent = item.inStock ? 'В НАЛИЧИИ' : 'НЕТ'; lbl.className = 'toggle-label ' + (item.inStock ? 'in' : 'out'); }
+  }
+}
+
+function clearDiscount(id) {
+  const item = getItem(id);
+  item.oldPrice = null;
+  const oldPriceEl = document.getElementById(`oldprice-${id}`);
+  if (oldPriceEl) oldPriceEl.value = '';
+  updatePriceDisplay(id);
+  const card = document.querySelector(`[data-id="${id}"]`);
+  if (card) {
+    card.classList.remove('has-discount');
+    const discBadge = card.querySelector('.badge-discount');
+    if (discBadge) discBadge.remove();
+  }
+}
+
+function updatePriceDisplay(id) {
+  const p = PRODUCTS.find(x => x.id === id);
+  const item = getItem(id);
+  const displayEl = document.getElementById(`price-display-${id}`);
+  if (!displayEl || !p) return;
+
+  const priceEl = document.getElementById(`price-${id}`);
+  const oldPriceEl = document.getElementById(`oldprice-${id}`);
+
+  const basePrice = (priceEl && priceEl.value && parseFloat(priceEl.value) > 0)
+    ? parseFloat(priceEl.value)
+    : (item.price || p.price);
+
+  const oldPriceRaw = oldPriceEl && oldPriceEl.value && parseFloat(oldPriceEl.value) > 0
+    ? parseFloat(oldPriceEl.value)
+    : null;
+
+  const finalPrice = calculatePrice(basePrice);
+  const finalOld = oldPriceRaw ? calculatePrice(oldPriceRaw) : null;
+
+  let html = `В магазине: <span class="final">${finalPrice}</span>`;
+  if (finalOld) {
+    html += ` <span class="crossed">${finalOld}</span> <span style="color:#ffb300;font-size:9px;">СКИДКА</span>`;
+  }
+  displayEl.innerHTML = html;
+}
+
+function updateStats() {
+  const total = PRODUCTS.length;
+  const inCount = PRODUCTS.filter(p => getItem(p.id).inStock).length;
+  const discountCount = PRODUCTS.filter(p => {
+    const item = getItem(p.id);
+    const priceEl = document.getElementById(`oldprice-${p.id}`);
+    const hasOld = (priceEl && parseFloat(priceEl.value) > 0) || item.oldPrice;
+    return !!hasOld;
+  }).length;
+
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-in').textContent = inCount;
+  document.getElementById('stat-out').textContent = total - inCount;
+  document.getElementById('stat-discount').textContent = discountCount;
+}
+
+function renderProducts() {
+  const search = document.getElementById('admin-search').value.toLowerCase();
+  const grid = document.getElementById('admin-product-grid');
+
+  const filtered = PRODUCTS.filter(p => {
+    const matchSearch = p.name.toLowerCase().includes(search);
+    const item = getItem(p.id);
+    const inStock = item.inStock;
+    const hasDiscount = item.oldPrice;
+    const matchFilter =
+      currentFilter === 'all' ||
+      (currentFilter === 'in' && inStock) ||
+      (currentFilter === 'out' && !inStock) ||
+      (currentFilter === 'discount' && hasDiscount);
+    return matchSearch && matchFilter;
+  });
+
+  grid.innerHTML = filtered.map(p => {
+    const item = getItem(p.id);
+    const inStock = item.inStock;
+    const currentPrice = item.price || p.price;
+    const currentOldPrice = item.oldPrice || p.oldPrice || '';
+    const hasDiscount = !!currentOldPrice;
+    const finalPrice = calculatePrice(currentPrice);
+    const finalOld = currentOldPrice ? calculatePrice(currentOldPrice) : null;
+
+    let pricePreview = `В магазине: <span class="final">${finalPrice}</span>`;
+    if (finalOld) pricePreview += ` <span class="crossed">${finalOld}</span> <span style="color:#ffb300;font-size:9px;">СКИДКА</span>`;
+
+    return `
+      <div class="product-card ${inStock ? '' : 'out'} ${hasDiscount ? 'has-discount' : ''}" data-id="${p.id}">
+        <div class="card-top">
+          <img class="product-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.opacity=0.3">
+          <div class="product-info">
+            <div class="product-name-txt">${p.name}</div>
+            <div class="product-meta">
+              <span class="badge badge-rarity-${p.rarity}">${p.rarity.toUpperCase()}</span>
+              <span class="badge badge-cat">${p.category.toUpperCase()}</span>
+              ${p.weaponType === 'chroma' ? '<span class="badge badge-chroma">CHROMA</span>' : ''}
+              ${hasDiscount ? '<span class="badge badge-discount">СКИДКА</span>' : ''}
+            </div>
+          </div>
+          <div class="toggle-wrap">
+            <label class="toggle">
+              <input type="checkbox" ${inStock ? 'checked' : ''} onchange="toggle('${p.id}')">
+              <span class="slider"></span>
+            </label>
+            <span class="toggle-label ${inStock ? 'in' : 'out'}">${inStock ? 'В НАЛИЧИИ' : 'НЕТ'}</span>
+          </div>
+        </div>
+
+        <div class="price-section">
+          <div class="price-field">
+            <label>ЦЕНА (БАЗОВАЯ)</label>
+            <input
+              class="price-input"
+              id="price-${p.id}"
+              type="number"
+              min="0"
+              step="1"
+              value="${currentPrice}"
+              placeholder="Базовая цена"
+              oninput="updatePriceDisplay('${p.id}')"
+            >
+          </div>
+          <div class="price-field">
+            <label>СТАРАЯ ЦЕНА (ДЛЯ СКИДКИ)</label>
+            <input
+              class="price-input old-price-input"
+              id="oldprice-${p.id}"
+              type="number"
+              min="0"
+              step="1"
+              value="${currentOldPrice}"
+              placeholder="Пусто = нет скидки"
+              oninput="updatePriceDisplay('${p.id}')"
+            >
+          </div>
+          <div class="price-field" style="grid-column: 1 / -1;">
+            <div class="price-display" id="price-display-${p.id}">${pricePreview}</div>
+          </div>
+          ${hasDiscount ? `<div style="grid-column: 1 / -1;"><button class="clear-discount-btn" onclick="clearDiscount('${p.id}')">✕ Убрать скидку</button></div>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// Инициализация
+setFilter('all');
+</script>
+</body>
+</html>
