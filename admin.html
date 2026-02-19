@@ -702,19 +702,21 @@ function buildPreviewHTML(id) {
   const d        = stockData[id];
   const price    = d.price    || 0;
   const oldPrice = d.oldPrice || null;
-  const hasDisc  = oldPrice && oldPrice > price;
+  const hasDisc  = oldPrice && oldPrice > 0;
+
+  // Цена базы ВСЕГДА с +40%
+  const displayPrice = calcMarkup(price);
 
   if (hasDisc) {
-    const disc = Math.round((1 - price / oldPrice) * 100);
+    // Старая цена — БЕЗ наценки, как есть
+    const disc = Math.round((1 - displayPrice / oldPrice) * 100);
     return `<span class="dim">Покупатель видит: </span>`
-         + `<span class="pv">${price}</span> `
+         + `<span class="pv">${displayPrice}</span> `
          + `<span class="po">${oldPrice}</span> `
-         + `<span class="pd">−${disc}%</span> `
-         + `<span class="dim">(скидка, без наценки)</span>`;
+         + `<span class="pd">−${disc}%</span>`;
   } else {
-    const display = calcMarkup(price);
     return `<span class="dim">Покупатель видит: </span>`
-         + `<span class="pv">${display}</span> `
+         + `<span class="pv">${displayPrice}</span> `
          + `<span class="dim">(+40% от ${price})</span>`;
   }
 }
@@ -754,10 +756,8 @@ function renderProducts() {
     const hasDisc  = oldPrice && oldPrice > price;
     const discPct  = hasDisc ? Math.round((1 - price / oldPrice) * 100) : 0;
 
-    // Цена которую видит покупатель:
-    // - если скидка → показываем цену БЕЗ наценки
-    // - если нет скидки → показываем цену С +40%
-    const displayPrice    = hasDisc ? price : calcMarkup(price);
+    // База ВСЕГДА с +40%, старая цена БЕЗ наценки
+    const displayPrice    = calcMarkup(price);
     const displayOldPrice = hasDisc ? oldPrice : null;
 
     const previewHTML = buildPreviewHTML(p.id);
