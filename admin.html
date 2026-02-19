@@ -67,7 +67,7 @@
     padding: 14px 16px;
     color: var(--text);
     font-family: 'Space Mono', monospace;
-    font-size: 16px; /* 16px чтобы iOS не зумил */
+    font-size: 16px;
     margin-bottom: 14px;
     outline: none;
     transition: border-color 0.2s;
@@ -246,7 +246,7 @@
     padding: 12px 14px;
     color: var(--text);
     font-family: 'Space Mono', monospace;
-    font-size: 16px; /* 16px чтобы iOS не зумил */
+    font-size: 16px;
     outline: none;
     transition: border-color 0.2s;
   }
@@ -299,7 +299,6 @@
     gap: 10px;
   }
 
-  /* На широких экранах — 2 колонки */
   @media (min-width: 640px) {
     .product-grid {
       display: grid;
@@ -326,7 +325,6 @@
 
   .product-card.out { opacity: 0.55; }
 
-  /* Верхняя строка карточки */
   .product-card-top {
     display: flex;
     align-items: center;
@@ -432,14 +430,13 @@
     padding: 10px 10px;
     color: var(--text);
     font-family: 'Space Mono', monospace;
-    font-size: 16px; /* 16px чтобы iOS не зумил */
+    font-size: 16px;
     outline: none;
     transition: border-color 0.2s;
   }
 
   .price-input:focus { border-color: var(--accent); }
 
-  /* PREVIEW */
   .price-preview {
     background: rgba(148,3,252,0.05);
     border: 1px solid rgba(148,3,252,0.15);
@@ -568,8 +565,6 @@ const JSONBIN_API_KEY = '$2a$10$aeI1awKXrn8g94Y10v5BUeP.zPPFcLoyrt0AgEuCTDBe7XBq
 const JSONBIN_BIN_ID  = '6996ee4dd0ea881f40c692c7';
 
 // ========= ТОВАРЫ =========
-// price — запасная цена (если JSONBin недоступен).
-// Все реальные цены и скидки управляются через интерфейс и хранятся в JSONBin.
 const PRODUCTS = [
   {
     id: 'sweet',
@@ -580,7 +575,456 @@ const PRODUCTS = [
     image: 'https://bit.ly/4aGGm5I',
     price: 1204,
   },
-  // Добавляй новые товары сюда по образцу выше
+  {
+    id: 'treat',
+    name: 'Treat',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://bit.ly/4rX6m3H',
+    price: 1204,
+  },
+  {
+    id: 'amerilaser',
+    name: 'Amerilaser',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEi7lClNZaNx7x9mYBar6jwtp_MLQGvDscIJDeg7-ZpHTdXVJvdLTY6vNVpLkgD_pSKr9VfFUxYAitCP_GiODD37M1yPAb_BTD7kfKlaKbTx2S_drNHsA8v0ljuzbzESiWG7gYCy6U7wDItI8SLceO4Q-WG9Fl5V441auaHmU7E4hp5CgknZMKSr_pxEIPk',
+    price: 30,
+  },
+  {
+    id: 'america',
+    name: 'America',
+    category: 'gun',
+    rarity: 'vintage',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEhrr3Bo_afrm8HbHXfXMEIclmRPNCa4X6MoTKoKqevwQFqajs06zWbxlBbOYq841FS9U-mL_rfnfAlMpeufjh6A9yaq38jzdS3VBN9CwWTZ-ASHpYpC5PMzxR_xPE-tewtF2L0GZFia7r5pkD5tTj-Twc2x1cXl9JQCmT_m1_VXqMwWV_jEoWPgvt8loss',
+    price: 8,
+  },
+  {
+    id: 'australis',
+    name: 'Australis',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/2024Australis.png',
+    price: 110,
+  },
+  {
+    id: 'battleaxe',
+    name: 'BattleAxe',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEi-IiYtaxU5KhxIkvrUqjE9fOv7dct0oZbFTg0GvqUAM16eKkFmXmmNDOi8Juez16hVfK7oOs03e5UAcu3SO7gWB37Oj0NBOeYo-H6_6jbjkE62c1zSvOQPZsBe1cCHCmNTQsEr6e2L3-xqdjKuffJALrG9EHDxfzzVg8UTuq0FvJXp5e_U2bb62tdYzG8',
+    price: 15,
+  },
+  {
+    id: 'battleaxe2',
+    name: 'Battle Axe 2',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEj6DRx6DC6hM3zdb7LG31zcm3yK0Ox5W20CisDQPsI2GFICWaWhyjsUzgXLmJjfIRDZE_f8QurvWdUWjpj5JW9SPoJn7Icx6mSMvbSD4pjmKrDZ5Tmi9DC6j_Lh5a2ZwEEtC1RiU2zkk260nsW2I4hoORl62QAp-6HqDg6Cu0APv_RMA-TTrwWlp690rVU',
+    price: 20,
+  },
+  {
+    id: 'bauble',
+    name: 'Bauble',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Bauble.png',
+    price: 885,
+  },
+  {
+    id: 'bat',
+    name: 'Bat',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'http://bit.ly/3H4ppXO',
+    price: 350,
+  },
+  {
+    id: 'bats-knife',
+    name: 'Bats Knife',
+    category: 'knife',
+    rarity: 'common',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/BatsK2018UP.png',
+    price: 105,
+  },
+  {
+    id: 'batwing',
+    name: 'Batwing',
+    category: 'knife',
+    rarity: 'ancient',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEiv6L5E1OsunLz5qPS4mRZR9eUcX5NlVroTgO79sc--P8fYShUGOsFqceueCK9Ab3-9RoDn6eHntP6W_XjgvwiY3jNGMuSL3BQYrkkbJ2P-ZNcJm1WeKtkfAfKniTnLnAAcLw6T4MNki_fPDwaOqPmAqWHI5-QkZVZRpRTwCbTOSmVHOqtSGZPFLOyYlAE',
+    price: 65,
+  },
+  {
+    id: 'beach',
+    name: 'Beach',
+    category: 'knife',
+    rarity: 'legendary',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Beach_knife.png',
+    price: 15,
+  },
+  {
+    id: 'bioblade',
+    name: 'BioBlade',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEi1uPY7R5AzXoAADKevlkfcGp0ttNFN6b2kkmGSRQ6LFihrc05k5oIan1uMcm-v6BDl97meuIDWjo06093meTjGaxFa7UEFCpycrRiKfpBEq9UeEhWHbyXAEqbYKfHrr-e_H-PnoTHxkleEd-CsN2KVv4c-otieZUMNcJ5zmlmfVXrdAEO5q-aiQCeVImk',
+    price: 15,
+  },
+  {
+    id: 'blaster',
+    name: 'Blaster',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEjeq756euToadH-tzGI0r6NCRZchC7e3TUslWYSNjkxD-S0BFgAqIWHFogMXlVbtfz15DXsJPm_HXhiaTAbxnlIcrC1YYcKV2Wjf_aImRccBeYZif6ehW40cEkq78DBtsEuNbiMQp-ikK8lGH5GVbFx9yxTm0Y0xF39DtMwVKgWwiz6DPlLG25NeAGM9LQ',
+    price: 25,
+  },
+  {
+    id: 'bloom',
+    name: 'Bloom',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Bloom_Knife.png',
+    price: 225,
+  },
+  {
+    id: 'blue-seer',
+    name: 'Blue Seer',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEhznCd4kbdO6sLW2_MaJrTe5-v7-7Bdgw-ugykP20Zsd92dxu_d0TPtQrH8uOREwJ19t6StXQlMrPEQpEp0WfjmE6aQRSbeLOVb6JTEruej49SS1IrmwuEMRprwV8VRxS6n6DqQYZi17JlAiBhb4LpocwEEoqO4fmVrhuBLQkWVpVdDo4pck0-HZSB9JBo',
+    price: 5,
+  },
+  {
+    id: 'blossom',
+    name: 'Blossom',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/BlossomGun.png',
+    price: 900,
+  },
+  {
+    id: 'boneblade',
+    name: 'Boneblade',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEjrxwLrplVqppLYvVE49bv3c58HdbL21AR6R_OQApxZnU7uPEWJ-zDs54Sp5Pli3ITqGKIe44bvkho3vSqWoWMOAcITm-YOcEkvCYBBLMcd9zYIvspkEAbf4ttakPm_8hlgXxAFmCOHPTHB_B3yrYZpTJAPTwwtUvlWxmaYN88Puigw3AC3BipQ8jUTyeg',
+    price: 8,
+  },
+  {
+    id: 'chroma-boneblade',
+    name: 'Chroma Boneblade',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: 'chroma',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEheR_8ZugjevHK1pS9Htb5FYdFXzTfqueY1Gf-bmO13lcmiFjGW7zlOfXUODP_CHrlLH3_83VLXo2CREHbFCei_NhRh82bihK61txYHNAUaJ4FxndfvhuFpB5PBsNljkwp5pRCgOTRoa5S1pF23ma9YEL0kowCf71UW1YVjTJM_9wsZFo8p6IHZD4J_5zo',
+    price: 35,
+  },
+  {
+    id: 'borealis',
+    name: 'Borealis',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/2024Borealis.png',
+    price: 120,
+  },
+  {
+    id: 'brains-2019',
+    name: 'Brains 2019',
+    category: 'knife',
+    rarity: 'uncommon',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEiVuAqvAODIPuiPoCI-kNZa2BWzlSDgML30aiKdw18DC2MlAazxllayDpJb0b2TrKj60-HiKlVCWb6A47tXHaw0paHmPS6vZdxunIbk_BAM14Y0_EkKgWdVAFtzEWeQUIyTmc2XrCVPWM-WWvCj5-Lnq8REopOmVOlqwJ-FVvYvRbX-QMYq8NQMnp-0gFA',
+    price: 45,
+  },
+  {
+    id: 'candleflame',
+    name: 'Candleflame',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEign0ZucujuZhy63UcTxUJEiSzHXkW1AR5gezFaALsWVKI_MftpwLcPl_a5qzpt-1l3rr_XF1uQul0geXO6Bhzk-5V28F-bCTo3B3m8i_KM_1a_3_ouPpd_AjKrngUlOK-Bl2SqjkLzEz9_1h3ZZO_8ITaKPI4a0FwZE5SN5lGoi1gyvtxNAe_7kYsxO4E',
+    price: 60,
+  },
+  {
+    id: 'candy',
+    name: 'Candy',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEgW-HiL9EB6vRqMwSXpwdp5jgB6iottQidKWVektDe_kUbtS1409jPsx-whc-onLetK2_yM6Qe6dvuAA0n38A1couhDIIl6QWYyLR4YrrweFWmjC4JPSBb1BttSoG0H7__aV-pSLUjc8vDeZu3dO5ClOlMi6A8zPXcyUprAH4Y2LgmwVE73FSgtIpEfAYc',
+    price: 175,
+  },
+  {
+    id: 'cane-knife',
+    name: 'Cane Knife',
+    category: 'knife',
+    rarity: 'rare',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Cane_knife2018UP.png',
+    price: 500,
+  },
+  {
+    id: 'cavern-knife',
+    name: 'Cavern Knife',
+    category: 'knife',
+    rarity: 'legendary',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Cavernknife19UP.png',
+    price: 10,
+  },
+  {
+    id: 'celestial',
+    name: 'Celestial',
+    category: 'knife',
+    rarity: 'ancient',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Celestial.png',
+    price: 1750,
+  },
+  {
+    id: 'chill',
+    name: 'Chill',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEjt4vxiw_JAcyYSg8L4ym6u1-xUvh4z7Eftjvtu1hnne-yogNX1smw5JhXStcoBHMw88c09yX9XtwEmIZBTl5Xu4xvgLpQLBlsuOd2uTFWQi4xQlq4tdCTQDokhrLXP2qYUToH7p5EsCgTiYBUNRD0IdyfKw3Vu7PV7AWyEHOh_HapXAzaZ1RcYgRdtIeU',
+    price: 15,
+  },
+  {
+    id: 'clockwork',
+    name: 'Clockwork',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEgDOjN2qTOV6zT39FwgmypLQN9pjZR2UstGOKvAm_ViqqoIic_YkCxjL2JYTPQWEGfRWnKwkYQvkgtrbszil8_VD8jCIdMh-IWRIis--lTMfa2vWviuIeuZXasBdhk5zZIFCfoWyL4CS8v-GvXn6Pw2da3682Amr1sOmJwxnjb1yc4f8PNlOgYSOed_Pw8',
+    price: 15,
+  },
+  {
+    id: 'constellation',
+    name: 'Constellation',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/2024Constellation.png',
+    price: 2900,
+  },
+  {
+    id: 'cookieblade',
+    name: 'Cookieblade',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEg4iy8_vxUjVCuI-DWlejGqSXrwvVFXXLrFiXUVDD-acNqgoRvcCXtDszpMBUwA06JIaByaXcqEXfMzZLuBbpERA_CUrMKgC62gKs-RR_TkN2ULALRK-6RGtvt24cN_8PI0sA5y2c5_2vM9kSSLqtsXf1fKV1u1Dcz7d8mLChNtw11T7jbXFbis4WcKrs8',
+    price: 5,
+  },
+  {
+    id: 'cookiecane',
+    name: 'Cookiecane',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEggpJrsLziYe_uIM7_-KgdcPnsI9FwjARHOh_M_-AN7lH57xcVZ0yUa7f_QjOWuZGDHIQjjzD8R0EQ5fhG-QjbIHyUkl2B_ykGJsNtUTNqDXQfL3dYz4qZ6L_5zUYOIMmA-e3dZq-EBlUuWbyXR4iaBldxdraK8vcB2sj0zPE-bTC_mVLztG5p2_rlgR-c',
+    price: 20,
+  },
+  {
+    id: 'corrupt',
+    name: 'Corrupt',
+    category: 'knife',
+    rarity: 'unique',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/CorruptUp.png',
+    price: 800,
+  },
+  {
+    id: 'cotton-candy',
+    name: 'Cotton Candy',
+    category: 'knife',
+    rarity: 'legendary',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/CottoncandyUP.png',
+    price: 45,
+  },
+  {
+    id: 'darkbringer',
+    name: 'Darkbringer',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEiPdBw2AjX2XreTnC4OSaW3gBdLextYPKE_nirYIHR-flZnkZGLVGdJPsvXFQR4nKO4a_NP8WV4amHGYwOAoGHVsdetofwiXtmQXLwg4AN_XTAPfu2assboV2qgOiEUl-p4GAKMNPxELVA_rnFVQkwavCpYyASNEw79VVjrHIgTXuG7662t9XV25basWrk',
+    price: 60,
+  },
+  {
+    id: 'darksword',
+    name: 'Darksword',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Darksword.png',
+    price: 1030,
+  },
+  {
+    id: 'darkshot',
+    name: 'Darkshot',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Darkshot.png',
+    price: 1050,
+  },
+  {
+    id: 'deathshard',
+    name: 'Deathshard',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEhx8DtZtHGR_FWsiDDyYy9IsmyM2ZODUw7k-azMP24u_z4O8S8lAwXA7hpzeaZPKUpIF4s_nDZ943a0QJdrILLuiWo_iQbTsNTypMcBkhzIEtfXKM7Tlw8MxMf4CmiRS-D7UqkpxJKHhWc3BlYD6leOLEW0HRYkPepvjpeqXN1r6Mb5kaghMJNG9EAj3BE',
+    price: 15,
+  },
+  {
+    id: 'chroma-deathshard',
+    name: 'Chroma Deathshard',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: 'chroma',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEiAoIO7YideEwoysdd6pX1xZrze28oeSYhLwpwXi2JdP6aByIjBedwuwZBYN6QYbxrEexsfPe9uDe9kgF4gtJ3tMdgcwUEl5yXuRnZQk8SknrsdJ3LaK4ADA6EEeSLCza12Oh9I-mg0_It3o2bTVsra0KMeJGwbq_QnWbxxpMpm7HP4irjdRNlrgiqb-sg',
+    price: 45,
+  },
+  {
+    id: 'dungeon',
+    name: 'Dungeon',
+    category: 'knife',
+    rarity: 'rare',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Dungeon19UP.png',
+    price: 30,
+  },
+  {
+    id: 'eggblade',
+    name: 'Eggblade',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEj1E4BKjUvJ9iSWGIXisinIeKw_sYK6fVtQgHw-QBLSPgAarHqKpaRj-NwiPGuD0uzpL_oQ9JiDjbUAJhct9rJ3z2FTVM8LY_9P8PnFsMOKBygNi6sZxknLmMqGrH1P4LPQQSLNACKXTF_o5yII2-EpsiJLx869Fy7o0wM9ER0WwOjHkbnw3brA3aN1ObA',
+    price: 7,
+  },
+  {
+    id: 'elderwood-blade',
+    name: 'Elderwood Blade',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEibXbJkWppGGW_uDipgavfXn6XzAquvMPiO74VrHFsxO1wZ2KNgYD4IFFzur_TsE6bFTjaF_g8eP0I_Utff7tY8nX6bSzKeBoKOmSWtbRjTZC8jmR0K2yu20yLEOP7JNW5pCvaogdzrr8UNAW1Mc6D48I9JGEy8c3RQEYHr6i36rMJ6h1Da0tDIqq7ZV8w',
+    price: 60,
+  },
+  {
+    id: 'chroma-elderwood-blade',
+    name: 'Chroma Elderwood Blade',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: 'chroma',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEh03RXeMWPbUSKb0msXDeapO9zAYB-BncgPWwH9XobTFnA9uXrXcpwcxr7D3UO1HXkaT-l1WeRHTBFQ-kM3sINqlW5vs9mVhnjv5-23oli4KPLvAlHseAWgT4rgwSWY96lt0IV0bU4bfkxWdwvkqdBKBevbXSJKUo2LXtW8T2VRe8R9n07ZWGnFHE7Nnkc',
+    price: 90,
+  },
+  {
+    id: 'elderwood-revolver',
+    name: 'Elderwood Revolver',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEhBzUqOcuYxzzzwWCBcSRtThYxnKRfAOwoZiFWA1oTgdGT8tiPbRckd-UVWiLQj9xWGFIZrc0TJ6tuhW3oGPGv-qYvYbFJ5ui24DImgVnpZsK4Q_qIvc0QQqvMDV6DO8GZ7zRtM9hjh0jDQxOEYH99MTwe36MJ93L3J2sl-jEoLD704HnCF4s8kGbr4_aw',
+    price: 60,
+  },
+  {
+    id: 'elderwood-scythe',
+    name: 'Elderwood Scythe',
+    category: 'knife',
+    rarity: 'ancient',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEh0F3Y6BnOOUf8mkRiUzp-Zk8Pw_dCt_UR_VgfHzWKUVap86hrU__veedEWH3-gC9UM8OEjC2PxxAE0ByuDClOq1g7vfVEY-GZ5lv7vBsJddN3OFrgrIk63jqFXqqXFeA1JjpiRiZeLPNbAqdX7hSP9wzT_nGIj7-UPzK-96qq7T9L03UQhJJaRS6YVwRU',
+    price: 70,
+  },
+  {
+    id: 'eternal',
+    name: 'Eternal',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEhOKxN-B2ZpRWhz1QKVW_TBS6rQC7ti48E-qdbGfuQKK9lMtH_9IsArdeQOHGP97Z3DuewNs5j5G87lkIW2FMRHwKe0B-ZX_c-oTF1mlTYQRRDKLbLtarf6IHFnjNIvpZW4Yfny_wa1j4YPEH0_tu1Tfs5ePWx8dY1WdX7lTfxIEr8_H1qMN4Unm5a4yFs',
+    price: 10,
+  },
+  {
+    id: 'eternal-2',
+    name: 'Eternal 2',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEipda29byq4jf-5x5gCM-Qja-Lugc2tySYWao-l50T9KF2Y-0Mpl1fnnNa1Zw3G6Ksc7D5lScTEQItq_Z7Uh9T4YVjY0XFal6MITRgq1FkkkOQhg3AfiOYFUAiTfH46PKU911sEwlAZUTvqJRVVmmhPbIzNWmQOvqeOxoRsVetQfn49_YkgvpDk_VShbO8',
+    price: 10,
+  },
+  {
+    id: 'eternal-3',
+    name: 'Eternal 3',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEiI0WvykzdrraQ3rA4pC_o7fgV-Sg4aSmKptM80NfTusvvacmOcbP8jaQDeXvHMwWFBY6fkG1nus-qTqUwAM88Z61cMeD9aCgQ_YQGyrZXqtWi3Tyc7nGA9GtLCtKgOt6MAhqpq9pYLa6y4V3o4OEh8Ay8f06erM7MZTZlaQ5PwyoFIWwTaXWCF5wUDH2Q',
+    price: 10,
+  },
+  {
+    id: 'eternal-4',
+    name: 'Eternal 4',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEiFBu46reT2rdU_s6S1svInYMsZHkGctFjolPdo5qZRqdAKsBFhhLULRsjZ4fvFTZbTXmVK9S3ChgaQQHqaIC3OG8kaulzrxjO1536oTE8n8uTNahu2jcYNrWxguxf68JfIsddChiKfcUonwp0T25hcNRn9Zzpzf-b-QHb9ylQHG62oPbaiS7Y00MFI0I',
+    price: 10,
+  },
+  {
+    id: 'eternalcane',
+    name: 'Eternalcane',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://blogger.googleusercontent.com/img/a/AVvXsEjbjhlM6w9HJRNovGQglpTA7w1JhJ2giXdVPLHoK8JrSMxXVBGKaoaBKAtlT9OZwNZSzDveYxX-yif_6v0dSSlQGAdwad41zKaXuCX2LqVFa7TW_PW-G2pliDw988kdxwbWcVFgxGgFdNciW7p4d5iFN-vEX4H3D2Bj7C1VfwCbyZTuv0glFYKWx1CsC94',
+    price: 20,
+  },
+  {
+    id: 'evergreen',
+    name: 'Evergreen',
+    category: 'knife',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Evergreen.png',
+    price: 3000,
+  },
+  {
+    id: 'evergun',
+    name: 'Evergun',
+    category: 'gun',
+    rarity: 'godly',
+    weaponType: '',
+    image: 'https://www.mm2values.com/img/Evergun.png',
+    price: 3900,
+  },
 ];
 
 let stockData = {};
@@ -634,7 +1078,6 @@ async function loadFromJsonBin() {
   } catch(e) {
     showStatus('Ошибка загрузки: ' + e.message, 'error');
   }
-  // Инициализируем новые товары которых нет в JSONBin
   PRODUCTS.forEach(p => {
     if (!stockData[p.id]) {
       stockData[p.id] = { inStock: true, price: p.price, oldPrice: null, popular: false };
@@ -694,7 +1137,6 @@ function toggle(id) {
   if (!stockData[id]) return;
   stockData[id].inStock = !stockData[id].inStock;
   updateStats();
-  // Обновляем карточку без полной перерисовки
   const card = document.querySelector(`[data-id="${id}"]`);
   if (card) {
     const inStock = stockData[id].inStock;
@@ -731,7 +1173,6 @@ function updatePrice(id, field, value) {
   refreshPreview(id);
 }
 
-// Пересчитываем и показываем превью для конкретного товара
 function refreshPreview(id) {
   const el = document.querySelector(`[data-id="${id}"] .price-preview`);
   if (!el || !stockData[id]) return;
@@ -743,12 +1184,9 @@ function buildPreviewHTML(id) {
   const price    = d.price    || 0;
   const oldPrice = d.oldPrice || null;
   const hasDisc  = oldPrice && oldPrice > 0;
-
-  // Цена базы ВСЕГДА с +40%
   const displayPrice = calcMarkup(price);
 
   if (hasDisc) {
-    // Старая цена — БЕЗ наценки, как есть
     const disc = Math.round((1 - displayPrice / oldPrice) * 100);
     return `<span class="dim">Покупатель видит: </span>`
          + `<span class="pv">${displayPrice}</span> `
