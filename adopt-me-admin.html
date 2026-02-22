@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Adopt Me — Панель управления</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f; --surface: #13131a; --border: #1e1e2e;
+    --accent: #9403fc; --accent2: #ff3c78; --text: #e8e8f0;
+    --muted: #555570; --green: #00e87a; --red: #ff3c78;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: 'Space Mono', monospace; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 14px; }
+
+  /* LOGIN */
+  #login-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 16px; }
+  .login-box { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 36px 24px; width: 100%; max-width: 360px; text-align: center; }
+  .login-logo { font-family: 'Syne', sans-serif; font-size: clamp(22px,6vw,28px); font-weight: 800; background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 6px; }
+  .login-sub { color: var(--muted); font-size: 11px; margin-bottom: 28px; letter-spacing: 2px; }
+  .login-input { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; margin-bottom: 14px; outline: none; transition: border-color 0.2s; text-align: center; letter-spacing: 3px; }
+  .login-input:focus { border-color: var(--accent); }
+  .login-btn { width: 100%; background: linear-gradient(135deg,var(--accent),var(--accent2)); border: none; border-radius: 10px; padding: 15px; color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; letter-spacing: 2px; cursor: pointer; touch-action: manipulation; }
+  .login-btn:active { opacity: 0.8; }
+  .login-error { color: var(--red); font-size: 12px; margin-top: 10px; display: none; }
+
+  /* MAIN */
+  #main-panel { display: none; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid var(--border); background: var(--surface); position: sticky; top: 0; z-index: 100; gap: 10px; }
+  .header-left { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(15px,4vw,20px); background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; white-space: nowrap; }
+  .header-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .save-btn { background: linear-gradient(135deg,var(--accent),var(--accent2)); border: none; border-radius: 8px; padding: 10px 16px; color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 1px; cursor: pointer; transition: opacity 0.2s; touch-action: manipulation; white-space: nowrap; }
+  .save-btn:active { opacity: 0.8; }
+  .save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .logout-btn { background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.2s; touch-action: manipulation; white-space: nowrap; }
+  .logout-btn:active { border-color: var(--red); color: var(--red); }
+
+  .status-bar { padding: 0 16px; min-height: 0; overflow: hidden; }
+  .status-msg { font-size: 12px; padding: 10px 14px; border-radius: 8px; display: none; margin: 10px 0 0; text-align: center; }
+  .status-msg.success { background: rgba(0,232,122,0.1); color: var(--green); border: 1px solid rgba(0,232,122,0.2); }
+  .status-msg.error   { background: rgba(255,60,120,0.1); color: var(--red);   border: 1px solid rgba(255,60,120,0.2); }
+  .status-msg.loading { background: rgba(148,3,252,0.1);  color: var(--accent);border: 1px solid rgba(148,3,252,0.2); }
+  .status-msg.show    { display: block; }
+
+  .container { padding: 16px; max-width: 900px; margin: 0 auto; }
+
+  /* STATS */
+  .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; }
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 8px; text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: clamp(22px,6vw,32px); font-weight: 800; line-height: 1; margin-bottom: 4px; }
+  .stat-num.green  { color: var(--green); }
+  .stat-num.red    { color: var(--red); }
+  .stat-num.purple { background: linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .stat-label { color: var(--muted); font-size: 9px; letter-spacing: 1.5px; }
+
+  /* TOOLBAR */
+  .toolbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .search-box { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; outline: none; transition: border-color 0.2s; }
+  .search-box:focus { border-color: var(--accent); }
+
+  /* PET GRID */
+  .pet-grid { display: flex; flex-direction: column; gap: 16px; }
+  @media (min-width: 700px) { .pet-grid { display: grid; grid-template-columns: repeat(2,1fr); } }
+
+  /* PET CARD */
+  .pet-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+
+  .pet-card-top { display: flex; align-items: center; gap: 12px; }
+  .pet-img { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; background: var(--bg); flex-shrink: 0; }
+  .pet-info { flex: 1; min-width: 0; }
+  .pet-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; margin-bottom: 6px; }
+  .badge { font-size: 9px; padding: 2px 7px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; display: inline-block; }
+  .badge-rarity-common { background: rgba(0,191,255,0.15); color: #00bfff; }
+  .badge-rarity-uncommon { background: rgba(153,0,255,0.15); color: #bb55ff; }
+  .badge-rarity-rare { background: rgba(0,224,30,0.15); color: #00e01e; }
+  .badge-rarity-legendary { background: rgba(128,128,128,0.15); color: #aaa; }
+
+  /* SECTION TITLES */
+  .section-title { font-size: 10px; letter-spacing: 2px; color: var(--muted); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+
+  /* GLOBAL TOGGLE */
+  .toggle-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
+  .toggle { position: relative; width: 52px; height: 28px; cursor: pointer; touch-action: manipulation; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: var(--border); border-radius: 28px; transition: 0.25s; }
+  .slider::before { content:''; position: absolute; width: 20px; height: 20px; left: 4px; bottom: 4px; background: var(--muted); border-radius: 50%; transition: 0.25s; }
+  input:checked + .slider { background: rgba(0,232,122,0.25); border: 1px solid var(--green); }
+  input:checked + .slider::before { transform: translateX(24px); background: var(--green); }
+  .toggle-label { font-size: 9px; letter-spacing: 1px; font-weight: 700; }
+  .toggle-label.in { color: var(--green); }
+  .toggle-label.out { color: var(--red); }
+
+  /* PRICE EDITOR */
+  .price-section { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .price-field label { display: block; font-size: 9px; color: var(--muted); letter-spacing: 1.5px; margin-bottom: 5px; }
+  .price-input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; outline: none; transition: border-color 0.2s; }
+  .price-input:focus { border-color: var(--accent); }
+  .price-preview { background: rgba(148,3,252,0.05); border: 1px solid rgba(148,3,252,0.15); border-radius: 8px; padding: 8px 12px; font-size: 11px; color: var(--muted); line-height: 1.7; margin-top: 8px; }
+  .price-preview .pv { color: var(--green); font-weight: 700; font-size: 13px; }
+  .price-preview .po { color: var(--red); text-decoration: line-through; }
+  .price-preview .dim { color: #444; font-size: 10px; }
+
+  /* AGES GRID */
+  .ages-section { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .ages-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
+  @media (min-width: 400px) { .ages-grid { grid-template-columns: repeat(4,1fr); } }
+
+  .age-toggle-btn {
+    padding: 6px 4px; border-radius: 6px; border: 1.5px solid var(--border);
+    background: var(--surface); color: var(--muted); font-family: 'Space Mono', monospace;
+    font-size: 10px; cursor: pointer; transition: all 0.2s; text-align: center; touch-action: manipulation;
+    letter-spacing: 0.5px;
+  }
+  .age-toggle-btn.age-on  { border-color: var(--green); background: rgba(0,232,122,0.08); color: var(--green); }
+  .age-toggle-btn.age-off { border-color: var(--red);   background: rgba(255,60,120,0.08); color: var(--red); opacity: 0.7; }
+
+  /* PROP PRICES */
+  .prop-prices { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+  .prop-price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  .empty-state { text-align: center; padding: 48px 16px; color: var(--muted); font-size: 13px; }
+  .empty-state div:first-child { font-size: 32px; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">ADOPT ME</div>
+    <div class="login-sub">ADMIN PANEL</div>
+    <input type="password" class="login-input" id="password-input" placeholder="••••••••"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">ВОЙТИ</button>
+    <div class="login-error" id="login-error">Неверный пароль</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div id="main-panel">
+  <header>
+    <div class="header-left">🐾 ADOPT ME ADMIN</div>
+    <div class="header-right">
+      <button class="save-btn" id="save-btn" onclick="saveToJsonBin()">💾 СОХРАНИТЬ</button>
+      <button class="logout-btn" onclick="doLogout()">ВЫЙТИ</button>
+    </div>
+  </header>
+
+  <div class="status-bar">
+    <div class="status-msg" id="status-msg"></div>
+  </div>
+
+  <div class="container">
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num purple" id="stat-total">0</div><div class="stat-label">ПИТОМЦЕВ</div></div>
+      <div class="stat-card"><div class="stat-num green"  id="stat-ages-in">0</div><div class="stat-label">ВОЗРАСТОВ В НАЛ.</div></div>
+      <div class="stat-card"><div class="stat-num red"    id="stat-ages-out">0</div><div class="stat-label">ВОЗРАСТОВ НЕТ</div></div>
+    </div>
+
+    <div class="toolbar">
+      <input class="search-box" id="admin-search" placeholder="🔍 Поиск питомца..." oninput="renderPets()">
+    </div>
+
+    <div class="pet-grid" id="pet-grid"></div>
+  </div>
+</div>
+
+<script>
+// =============================================
+// НАСТРОЙКИ
+// =============================================
+const ADMIN_PASSWORD  = 'admin123';
+const JSONBIN_API_KEY = '$2a$10$6idOYJmOKc78n2HB5S9rJ.28KChL7KuD1RgeWyqkqC8W8SnGVGnFu';
+const JSONBIN_BIN_ID  = 'REPLACE_WITH_YOUR_BIN_ID'; // ← замените на ваш BIN ID
+
+// =============================================
+// ПИТОМЦЫ (базовые данные — хранилище только для изменений)
+// =============================================
+const ALL_AGES = ['Newborn','Junior','Pre-Teen','Teen','Post-Teen','Full-Grown','Reborn','Twinkle','Sparkle','Flare','Sunshine','Luminous'];
+
+const PETS_BASE = [
+  {
+    id: 'cat', name: 'Cat', rarity: 'common', canFly: true, canRide: true,
+    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg5OOiKnn1NmXkDCafFRmBxZ38SKwtmJaZJLJbEtNhY-1iMA08lSL77LW2Fr2clsMLvfWNF5FD3ulSS2WXp610WQEFW3NjjObIG02tTq3NP6mcqe03ZpdWFXYb6_x1lnSa2Xpt4In-EHMSIePZNmygEN4zHqUP3JL8MLMjmVH7n8lplLuTAhujlxX5YIqA/s128/Cat_Icon.webp',
+    defaultPrices: { base: { 'Newborn':5,'Junior':6,'Pre-Teen':7,'Teen':8,'Post-Teen':9,'Full-Grown':11,'Reborn':18,'Twinkle':22,'Sparkle':27,'Flare':32,'Sunshine':38,'Luminous':45 }, neon:30, mega:80, fly:5, ride:8 },
+    defaultAges: { 'Newborn':true,'Junior':true,'Pre-Teen':true,'Teen':true,'Post-Teen':true,'Full-Grown':true,'Reborn':false,'Twinkle':false,'Sparkle':false,'Flare':false,'Sunshine':false,'Luminous':false }
+  },
+  {
+    id: 'dog', name: 'Dog', rarity: 'common', canFly: true, canRide: true,
+    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEicYvUjghtePc2ZsdMwulLKmfQgndZQvFeQtrkvxwgKjecg0XK_6l-1IqDwrS0qgHi3-j17m1RsNq5tzmTDaVsJAIFu_czL-Sxr3R0zFnbrsQdvWw-eS9au4KfRqIkpUeVuIQLjVYI0MwKJF17NEGtsmc-TarjLf7w5QFOyJj768qH-VYDUxobY-rqn2I8/s70/Dog.webp',
+    defaultPrices: { base: { 'Newborn':4,'Junior':5,'Pre-Teen':6,'Teen':7,'Post-Teen':8,'Full-Grown':10,'Reborn':16,'Twinkle':20,'Sparkle':25,'Flare':30,'Sunshine':36,'Luminous':42 }, neon:40, mega:100, fly:6, ride:9 },
+    defaultAges: { 'Newborn':true,'Junior':true,'Pre-Teen':true,'Teen':true,'Post-Teen':true,'Full-Grown':true,'Reborn':false,'Twinkle':false,'Sparkle':false,'Flare':false,'Sunshine':false,'Luminous':false }
+  }
+  // Добавляйте питомцев сюда...
+];
+
+let stockData = {};
+
+function getSD(id) {
+  if (!stockData[id]) {
+    const base = PETS_BASE.find(p => p.id === id);
+    stockData[id] = {
+      inStock:    true,
+      ages:       { ...base.defaultAges },
+      basePrices: { ...base.defaultPrices.base },
+      neonPrice:  base.defaultPrices.neon,
+      megaPrice:  base.defaultPrices.mega,
+      flyPrice:   base.defaultPrices.fly,
+      ridePrice:  base.defaultPrices.ride,
+      oldPrice:   null,
+    };
+  }
+  return stockData[id];
+}
+
+// =============================================
+// LOGIN
+// =============================================
+function doLogin() {
+  const val = document.getElementById('password-input').value;
+  if (val === ADMIN_PASSWORD) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-panel').style.display = 'block';
+    loadFromJsonBin();
+  } else {
+    document.getElementById('login-error').style.display = 'block';
+    document.getElementById('password-input').value = '';
+  }
+}
+function doLogout() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('main-panel').style.display = 'none';
+  document.getElementById('password-input').value = '';
+}
+
+// =============================================
+// JSONBIN
+// =============================================
+async function loadFromJsonBin() {
+  showStatus('Загрузка...', 'loading');
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': JSONBIN_API_KEY }
+    });
+    if (!res.ok) throw new Error('Ошибка ' + res.status);
+    const data = await res.json();
+    stockData = data.record || {};
+    showStatus('Загружено ✓', 'success');
+  } catch(e) {
+    showStatus('Ошибка загрузки: ' + e.message, 'error');
+  }
+  // Инициализируем дефолты для питомцев без данных
+  PETS_BASE.forEach(p => getSD(p.id));
+  renderPets();
+  updateStats();
+}
+
+async function saveToJsonBin() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true;
+  showStatus('Сохранение...', 'loading');
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'X-Master-Key': JSONBIN_API_KEY },
+      body: JSON.stringify(stockData)
+    });
+    if (!res.ok) throw new Error('Ошибка ' + res.status);
+    showStatus('Сохранено ✓ Магазин обновлён', 'success');
+  } catch(e) {
+    showStatus('Ошибка: ' + e.message, 'error');
+  }
+  btn.disabled = false;
+}
+
+// =============================================
+// UI HELPERS
+// =============================================
+function showStatus(msg, type) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = 'status-msg show ' + type;
+  if (type === 'success') setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function updateStats() {
+  let totalAgesIn = 0, totalAgesOut = 0;
+  PETS_BASE.forEach(p => {
+    const sd = getSD(p.id);
+    ALL_AGES.forEach(a => {
+      if (sd.ages[a]) totalAgesIn++; else totalAgesOut++;
+    });
+  });
+  document.getElementById('stat-total').textContent    = PETS_BASE.length;
+  document.getElementById('stat-ages-in').textContent  = totalAgesIn;
+  document.getElementById('stat-ages-out').textContent = totalAgesOut;
+}
+
+// =============================================
+// PET CARD ACTIONS
+// =============================================
+function toggleGlobal(id) {
+  const sd = getSD(id);
+  sd.inStock = !sd.inStock;
+  updateStats();
+  const card = document.querySelector(`[data-id="${id}"]`);
+  if (card) {
+    const inp = card.querySelector('.global-toggle');
+    const lbl = card.querySelector('.toggle-label');
+    if (inp) inp.checked = sd.inStock;
+    if (lbl) { lbl.textContent = sd.inStock ? 'В НАЛИЧИИ' : 'НЕТ'; lbl.className = 'toggle-label ' + (sd.inStock ? 'in' : 'out'); }
+    card.style.opacity = sd.inStock ? '1' : '0.6';
+  }
+}
+
+function toggleAge(id, age) {
+  const sd = getSD(id);
+  sd.ages[age] = !sd.ages[age];
+  updateStats();
+  const btn = document.getElementById(`age-btn-${id}-${age.replace(/[^a-z]/gi,'-')}`);
+  if (btn) {
+    btn.textContent = age;
+    btn.className = 'age-toggle-btn ' + (sd.ages[age] ? 'age-on' : 'age-off');
+  }
+}
+
+function updateBasePriceAge(id, age, val) {
+  const sd = getSD(id);
+  const num = parseFloat(val);
+  if (!isNaN(num) && num > 0) { sd.basePrices[age] = num; }
+}
+
+function updatePropPrice(id, prop, val) {
+  const sd = getSD(id);
+  const num = parseFloat(val);
+  if (!isNaN(num) && num >= 0) sd[prop + 'Price'] = num;
+  refreshPreview(id);
+}
+
+function updateOldPrice(id, val) {
+  const sd = getSD(id);
+  const num = parseFloat(val);
+  sd.oldPrice = (!isNaN(num) && num > 0) ? num : null;
+  refreshPreview(id);
+}
+
+function refreshPreview(id) {
+  const el = document.querySelector(`[data-id="${id}"] .price-preview`);
+  if (el) el.innerHTML = buildPreviewHTML(id);
+}
+
+function buildPreviewHTML(id) {
+  const sd = getSD(id);
+  const base = PETS_BASE.find(p => p.id === id);
+  const newbornPrice = sd.basePrices['Newborn'] || base.defaultPrices.base['Newborn'];
+  const neon = sd.neonPrice, mega = sd.megaPrice;
+  const fly  = base.canFly  ? sd.flyPrice  : 0;
+  const ride = base.canRide ? sd.ridePrice : 0;
+  const oldP = sd.oldPrice;
+
+  let html = `<span class="dim">Newborn базовая: </span><span class="pv">${newbornPrice}</span><br>`;
+  html += `<span class="dim">+Neon: </span><span class="pv">${neon}</span>  `;
+  html += `<span class="dim">+Mega: </span><span class="pv">${mega}</span><br>`;
+  if (base.canFly)  html += `<span class="dim">+Fly: </span><span class="pv">${fly}</span>  `;
+  if (base.canRide) html += `<span class="dim">+Ride: </span><span class="pv">${ride}</span>`;
+  if (oldP) html += `<br><span class="dim">Старая цена: </span><span class="po">${oldP}</span>`;
+  return html;
+}
+
+// =============================================
+// RENDER
+// =============================================
+function renderPets() {
+  const search = document.getElementById('admin-search').value.toLowerCase();
+  const grid   = document.getElementById('pet-grid');
+
+  const filtered = PETS_BASE.filter(p => p.name.toLowerCase().includes(search));
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><div>🔍</div>Питомцы не найдены</div>`;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(p => {
+    const sd = getSD(p.id);
+
+    // Ages grid
+    const agesHTML = ALL_AGES.map(a => {
+      const on  = sd.ages[a];
+      const bid = `age-btn-${p.id}-${a.replace(/[^a-z]/gi,'-')}`;
+      return `<button id="${bid}" class="age-toggle-btn ${on?'age-on':'age-off'}" onclick="toggleAge('${p.id}','${a}')">${a}</button>`;
+    }).join('');
+
+    // Base prices by age
+    const ageBasePricesHTML = ALL_AGES.map(a => `
+      <div class="price-field">
+        <label>${a.toUpperCase()}</label>
+        <input class="price-input" type="number" inputmode="numeric" min="1"
+          value="${sd.basePrices[a] !== undefined ? sd.basePrices[a] : p.defaultPrices.base[a]}"
+          onchange="updateBasePriceAge('${p.id}','${a}',this.value)">
+      </div>`).join('');
+
+    return `
+      <div class="pet-card" data-id="${p.id}" style="opacity:${sd.inStock?'1':'0.6'}">
+        <div class="pet-card-top">
+          <img class="pet-img" src="${p.image}" alt="${p.name}" loading="lazy">
+          <div class="pet-info">
+            <div class="pet-name">${p.name}</div>
+            <span class="badge badge-rarity-${p.rarity}">${p.rarity.toUpperCase()}</span>
+          </div>
+          <div class="toggle-wrap">
+            <label class="toggle">
+              <input type="checkbox" class="global-toggle" ${sd.inStock?'checked':''} onchange="toggleGlobal('${p.id}')">
+              <span class="slider"></span>
+            </label>
+            <span class="toggle-label ${sd.inStock?'in':'out'}">${sd.inStock?'В НАЛИЧИИ':'НЕТ'}</span>
+          </div>
+        </div>
+
+        <!-- ВОЗРАСТЫ -->
+        <div class="ages-section">
+          <div class="section-title">Наличие по возрастам</div>
+          <div class="ages-grid">${agesHTML}</div>
+        </div>
+
+        <!-- ЦЕНЫ СВОЙСТВ -->
+        <div class="prop-prices">
+          <div class="section-title">Цены добавок</div>
+          <div class="prop-price-grid">
+            <div class="price-field">
+              <label>🟢 NEON</label>
+              <input class="price-input" type="number" inputmode="numeric" min="0"
+                value="${sd.neonPrice}" onchange="updatePropPrice('${p.id}','neon',this.value)">
+            </div>
+            <div class="price-field">
+              <label>💜 MEGA NEON</label>
+              <input class="price-input" type="number" inputmode="numeric" min="0"
+                value="${sd.megaPrice}" onchange="updatePropPrice('${p.id}','mega',this.value)">
+            </div>
+            ${p.canFly ? `
+            <div class="price-field">
+              <label>✈️ FLYABLE</label>
+              <input class="price-input" type="number" inputmode="numeric" min="0"
+                value="${sd.flyPrice}" onchange="updatePropPrice('${p.id}','fly',this.value)">
+            </div>` : ''}
+            ${p.canRide ? `
+            <div class="price-field">
+              <label>🐎 RIDEABLE</label>
+              <input class="price-input" type="number" inputmode="numeric" min="0"
+                value="${sd.ridePrice}" onchange="updatePropPrice('${p.id}','ride',this.value)">
+            </div>` : ''}
+            <div class="price-field">
+              <label>СТАРАЯ ЦЕНА (скидка)</label>
+              <input class="price-input" type="number" inputmode="numeric" min="0"
+                value="${sd.oldPrice||''}" placeholder="нет"
+                onchange="updateOldPrice('${p.id}',this.value)">
+            </div>
+          </div>
+        </div>
+
+        <!-- ЦЕНЫ ПО ВОЗРАСТАМ -->
+        <div class="price-section">
+          <div class="section-title">Базовые цены по возрастам</div>
+          <div class="price-grid">${ageBasePricesHTML}</div>
+          <div class="price-preview">${buildPreviewHTML(p.id)}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+</script>
+</body>
+</html>
