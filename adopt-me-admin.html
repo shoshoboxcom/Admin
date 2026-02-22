@@ -326,16 +326,28 @@ function toggleAge(id, age) {
   }
 }
 
-function updateBasePriceAge(id, age, val) {
-  const sd = getSD(id);
+function updateBasePriceAge(id, age, val, inputEl) {
+  const sd  = getSD(id);
   const num = parseFloat(val);
-  if (!isNaN(num) && num > 0) { sd.basePrices[age] = num; }
+  if (!isNaN(num) && num > 0) {
+    sd.basePrices[age] = num;
+  } else {
+    // Restore previous valid value in the input
+    if (inputEl) inputEl.value = sd.basePrices[age] !== undefined
+      ? sd.basePrices[age]
+      : PETS_BASE.find(p => p.id === id).defaultPrices.base[age];
+  }
 }
 
-function updatePropPrice(id, prop, val) {
-  const sd = getSD(id);
+function updatePropPrice(id, prop, val, inputEl) {
+  const sd  = getSD(id);
   const num = parseFloat(val);
-  if (!isNaN(num) && num >= 0) sd[prop + 'Price'] = num;
+  if (!isNaN(num) && num >= 0) {
+    sd[prop + 'Price'] = num;
+  } else {
+    // Restore previous value — never treat empty as anything special
+    if (inputEl) inputEl.value = sd[prop + 'Price'];
+  }
   refreshPreview(id);
 }
 
@@ -399,7 +411,7 @@ function renderPets() {
         <label>${a.toUpperCase()}</label>
         <input class="price-input" type="number" inputmode="numeric" min="1"
           value="${sd.basePrices[a] !== undefined ? sd.basePrices[a] : p.defaultPrices.base[a]}"
-          onchange="updateBasePriceAge('${p.id}','${a}',this.value)">
+          onchange="updateBasePriceAge('${p.id}','${a}',this.value,this)">
       </div>`).join('');
 
     return `
@@ -432,24 +444,24 @@ function renderPets() {
             <div class="price-field">
               <label>🟢 NEON</label>
               <input class="price-input" type="number" inputmode="numeric" min="0"
-                value="${sd.neonPrice}" onchange="updatePropPrice('${p.id}','neon',this.value)">
+                value="${sd.neonPrice}" onchange="updatePropPrice('${p.id}','neon',this.value,this)">
             </div>
             <div class="price-field">
               <label>💜 MEGA NEON</label>
               <input class="price-input" type="number" inputmode="numeric" min="0"
-                value="${sd.megaPrice}" onchange="updatePropPrice('${p.id}','mega',this.value)">
+                value="${sd.megaPrice}" onchange="updatePropPrice('${p.id}','mega',this.value,this)">
             </div>
             ${p.canFly ? `
             <div class="price-field">
               <label>✈️ FLYABLE</label>
               <input class="price-input" type="number" inputmode="numeric" min="0"
-                value="${sd.flyPrice}" onchange="updatePropPrice('${p.id}','fly',this.value)">
+                value="${sd.flyPrice}" onchange="updatePropPrice('${p.id}','fly',this.value,this)">
             </div>` : ''}
             ${p.canRide ? `
             <div class="price-field">
               <label>🐎 RIDEABLE</label>
               <input class="price-input" type="number" inputmode="numeric" min="0"
-                value="${sd.ridePrice}" onchange="updatePropPrice('${p.id}','ride',this.value)">
+                value="${sd.ridePrice}" onchange="updatePropPrice('${p.id}','ride',this.value,this)">
             </div>` : ''}
             <div class="price-field">
               <label>СТАРАЯ ЦЕНА (скидка)</label>
