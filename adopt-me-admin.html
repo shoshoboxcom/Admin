@@ -33,17 +33,17 @@
   .save-btn { background: linear-gradient(135deg,var(--accent),var(--accent2)); border: none; border-radius: 8px; padding: 10px 16px; color: #fff; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 12px; letter-spacing: 1px; cursor: pointer; transition: opacity 0.2s; touch-action: manipulation; white-space: nowrap; }
   .save-btn:active { opacity: 0.8; }
   .save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .logout-btn { background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 11px; cursor: pointer; transition: all 0.2s; touch-action: manipulation; white-space: nowrap; }
+  .logout-btn { background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 11px; cursor: pointer; touch-action: manipulation; white-space: nowrap; }
   .logout-btn:active { border-color: var(--red); color: var(--red); }
 
-  .status-bar { padding: 0 16px; min-height: 0; overflow: hidden; }
+  .status-bar { padding: 0 16px; }
   .status-msg { font-size: 12px; padding: 10px 14px; border-radius: 8px; display: none; margin: 10px 0 0; text-align: center; }
   .status-msg.success { background: rgba(0,232,122,0.1); color: var(--green); border: 1px solid rgba(0,232,122,0.2); }
   .status-msg.error   { background: rgba(255,60,120,0.1); color: var(--red);   border: 1px solid rgba(255,60,120,0.2); }
   .status-msg.loading { background: rgba(148,3,252,0.1);  color: var(--accent);border: 1px solid rgba(148,3,252,0.2); }
   .status-msg.show    { display: block; }
 
-  .container { padding: 16px; max-width: 900px; margin: 0 auto; }
+  .container { padding: 16px; max-width: 960px; margin: 0 auto; }
 
   /* STATS */
   .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 20px; }
@@ -55,29 +55,29 @@
   .stat-label { color: var(--muted); font-size: 9px; letter-spacing: 1.5px; }
 
   /* TOOLBAR */
-  .toolbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+  .toolbar { margin-bottom: 16px; }
   .search-box { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; outline: none; transition: border-color 0.2s; }
   .search-box:focus { border-color: var(--accent); }
 
   /* PET GRID */
-  .pet-grid { display: flex; flex-direction: column; gap: 16px; }
-  @media (min-width: 700px) { .pet-grid { display: grid; grid-template-columns: repeat(2,1fr); } }
+  .pet-grid { display: flex; flex-direction: column; gap: 20px; }
 
   /* PET CARD */
-  .pet-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .pet-card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+  .pet-card.globally-off { opacity: 0.55; }
 
   .pet-card-top { display: flex; align-items: center; gap: 12px; }
-  .pet-img { width: 64px; height: 64px; border-radius: 12px; object-fit: cover; background: var(--bg); flex-shrink: 0; }
+  .pet-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; background: var(--bg); flex-shrink: 0; }
   .pet-info { flex: 1; min-width: 0; }
   .pet-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 16px; margin-bottom: 6px; }
   .badge { font-size: 9px; padding: 2px 7px; border-radius: 4px; font-weight: 700; letter-spacing: 1px; display: inline-block; }
-  .badge-rarity-common { background: rgba(0,191,255,0.15); color: #00bfff; }
-  .badge-rarity-uncommon { background: rgba(153,0,255,0.15); color: #bb55ff; }
-  .badge-rarity-rare { background: rgba(0,224,30,0.15); color: #00e01e; }
-  .badge-rarity-legendary { background: rgba(128,128,128,0.15); color: #aaa; }
+  .badge-rarity-common     { background: rgba(0,191,255,0.15); color: #00bfff; }
+  .badge-rarity-uncommon   { background: rgba(153,0,255,0.15); color: #bb55ff; }
+  .badge-rarity-rare       { background: rgba(0,224,30,0.15);  color: #00e01e; }
+  .badge-rarity-ultra-rare { background: rgba(255,0,0,0.15);   color: #ff4444; }
+  .badge-rarity-legendary  { background: rgba(128,128,128,0.15); color: #aaa; }
 
-  /* SECTION TITLES */
-  .section-title { font-size: 10px; letter-spacing: 2px; color: var(--muted); font-weight: 700; text-transform: uppercase; margin-bottom: 8px; }
+  .section-title { font-size: 10px; letter-spacing: 2px; color: var(--muted); font-weight: 700; text-transform: uppercase; margin-bottom: 10px; }
 
   /* GLOBAL TOGGLE */
   .toggle-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; }
@@ -88,37 +88,57 @@
   input:checked + .slider { background: rgba(0,232,122,0.25); border: 1px solid var(--green); }
   input:checked + .slider::before { transform: translateX(24px); background: var(--green); }
   .toggle-label { font-size: 9px; letter-spacing: 1px; font-weight: 700; }
-  .toggle-label.in { color: var(--green); }
+  .toggle-label.in  { color: var(--green); }
   .toggle-label.out { color: var(--red); }
 
-  /* PRICE EDITOR */
-  .price-section { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
-  .price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .price-field label { display: block; font-size: 9px; color: var(--muted); letter-spacing: 1.5px; margin-bottom: 5px; }
-  .price-input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; outline: none; transition: border-color 0.2s; }
-  .price-input:focus { border-color: var(--accent); }
-  .price-preview { background: rgba(148,3,252,0.05); border: 1px solid rgba(148,3,252,0.15); border-radius: 8px; padding: 8px 12px; font-size: 11px; color: var(--muted); line-height: 1.7; margin-top: 8px; }
-  .price-preview .pv { color: var(--green); font-weight: 700; font-size: 13px; }
-  .price-preview .po { color: var(--red); text-decoration: line-through; }
-  .price-preview .dim { color: #444; font-size: 10px; }
+  /* VARIANTS SECTION */
+  .variants-section { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+  .variants-list { display: flex; flex-direction: column; gap: 8px; }
 
-  /* AGES GRID */
-  .ages-section { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
-  .ages-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; }
-  @media (min-width: 400px) { .ages-grid { grid-template-columns: repeat(4,1fr); } }
-
-  .age-toggle-btn {
-    padding: 6px 4px; border-radius: 6px; border: 1.5px solid var(--border);
-    background: var(--surface); color: var(--muted); font-family: 'Space Mono', monospace;
-    font-size: 10px; cursor: pointer; transition: all 0.2s; text-align: center; touch-action: manipulation;
-    letter-spacing: 0.5px;
+  .variant-row {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: border-color 0.2s, background 0.2s, opacity 0.2s;
   }
-  .age-toggle-btn.age-on  { border-color: var(--green); background: rgba(0,232,122,0.08); color: var(--green); }
-  .age-toggle-btn.age-off { border-color: var(--red);   background: rgba(255,60,120,0.08); color: var(--red); opacity: 0.7; }
+  .variant-row.v-in  { border-color: rgba(0,232,122,0.3); background: rgba(0,232,122,0.03); }
+  .variant-row.v-out { border-color: rgba(255,60,120,0.2); background: rgba(255,60,120,0.03); opacity: 0.55; }
 
-  /* PROP PRICES */
-  .prop-prices { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
-  .prop-price-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  /* Mini toggle */
+  .mini-toggle { position: relative; width: 38px; height: 22px; cursor: pointer; touch-action: manipulation; flex-shrink: 0; }
+  .mini-toggle input { opacity: 0; width: 0; height: 0; }
+  .mini-slider { position: absolute; inset: 0; background: var(--border); border-radius: 22px; transition: 0.2s; }
+  .mini-slider::before { content:''; position: absolute; width: 14px; height: 14px; left: 4px; bottom: 4px; background: var(--muted); border-radius: 50%; transition: 0.2s; }
+  .mini-toggle input:checked + .mini-slider { background: rgba(0,232,122,0.3); border: 1px solid var(--green); }
+  .mini-toggle input:checked + .mini-slider::before { transform: translateX(16px); background: var(--green); }
+
+  .variant-info { flex: 1; min-width: 0; }
+  .variant-name { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+  .variant-props { display: flex; gap: 4px; flex-wrap: wrap; }
+  .vprop { font-size: 9px; padding: 1px 5px; border-radius: 3px; font-weight: 700; }
+  .vprop-fly      { background: rgba(0,180,255,0.15); color: #00b4ff; }
+  .vprop-ride     { background: rgba(255,140,0,0.15); color: #ff8c00; }
+  .vprop-neon     { background: rgba(0,230,118,0.15); color: #00e676; }
+  .vprop-meganeon { background: rgba(148,3,252,0.2);  color: #c060ff; }
+
+  /* Price input inside variant row */
+  .variant-price-wrap { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .variant-price-wrap .currency-icon {
+    width: 16px; height: 16px;
+    background-image: url('https://bit.ly/4he4nSx'); background-size: cover; flex-shrink: 0;
+  }
+  .variant-price-input {
+    width: 80px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 7px 8px; color: var(--text); font-family: 'Space Mono', monospace;
+    font-size: 14px; font-weight: 700; outline: none; transition: border-color 0.2s; text-align: center;
+  }
+  .variant-price-input:focus { border-color: var(--accent); }
+  .variant-row.v-in .variant-price-input { border-color: rgba(0,232,122,0.25); color: var(--green); }
+  .variant-row.v-out .variant-price-input { color: var(--muted); }
 
   .empty-state { text-align: center; padding: 48px 16px; color: var(--muted); font-size: 13px; }
   .empty-state div:first-child { font-size: 32px; margin-bottom: 12px; }
@@ -147,16 +167,13 @@
       <button class="logout-btn" onclick="doLogout()">ВЫЙТИ</button>
     </div>
   </header>
-
-  <div class="status-bar">
-    <div class="status-msg" id="status-msg"></div>
-  </div>
+  <div class="status-bar"><div class="status-msg" id="status-msg"></div></div>
 
   <div class="container">
     <div class="stats-row">
       <div class="stat-card"><div class="stat-num purple" id="stat-total">0</div><div class="stat-label">ПИТОМЦЕВ</div></div>
-      <div class="stat-card"><div class="stat-num green"  id="stat-ages-in">0</div><div class="stat-label">ВОЗРАСТОВ В НАЛ.</div></div>
-      <div class="stat-card"><div class="stat-num red"    id="stat-ages-out">0</div><div class="stat-label">ВОЗРАСТОВ НЕТ</div></div>
+      <div class="stat-card"><div class="stat-num green"  id="stat-variants-in">0</div><div class="stat-label">ВАРИАНТОВ В НАЛ.</div></div>
+      <div class="stat-card"><div class="stat-num red"    id="stat-variants-out">0</div><div class="stat-label">ВАРИАНТОВ НЕТ</div></div>
     </div>
 
     <div class="toolbar">
@@ -168,51 +185,73 @@
 </div>
 
 <script>
-// =============================================
-// НАСТРОЙКИ
-// =============================================
 const ADMIN_PASSWORD  = 'admin123';
 const JSONBIN_API_KEY = '$2a$10$6idOYJmOKc78n2HB5S9rJ.28KChL7KuD1RgeWyqkqC8W8SnGVGnFu';
-const JSONBIN_BIN_ID  = '699b789843b1c97be994a1ac'; // ← замените на ваш BIN ID
+const JSONBIN_BIN_ID  = '699b789843b1c97be994a1ac';
 
-// =============================================
-// ПИТОМЦЫ (базовые данные — хранилище только для изменений)
-// =============================================
-const ALL_AGES = ['Newborn','Junior','Pre-Teen','Teen','Post-Teen','Full-Grown','Reborn','Twinkle','Sparkle','Flare','Sunshine','Luminous'];
+const PROP_LABELS = {
+  ride:     '🐎 Ride',
+  fly:      '✈️ Fly',
+  neon:     '🟢 Neon',
+  meganeon: '💜 Mega',
+};
+
+const VARIANTS = [
+  { key: 'base',              props: [],                       label: 'Базовый',            defaultPrice: 10 },
+  { key: 'ride',              props: ['ride'],                  label: 'Ride',               defaultPrice: 18 },
+  { key: 'fly',               props: ['fly'],                   label: 'Fly',                defaultPrice: 15 },
+  { key: 'flyride',           props: ['fly','ride'],            label: 'Fly + Ride',         defaultPrice: 23 },
+  { key: 'neon',              props: ['neon'],                  label: 'Neon',               defaultPrice: 40 },
+  { key: 'neon_fly',          props: ['neon','fly'],            label: 'Neon + Fly',         defaultPrice: 55 },
+  { key: 'neon_ride',         props: ['neon','ride'],           label: 'Neon + Ride',        defaultPrice: 48 },
+  { key: 'neon_fly_ride',     props: ['neon','fly','ride'],     label: 'Neon + Fly + Ride',  defaultPrice: 63 },
+  { key: 'meganeon',          props: ['meganeon'],              label: 'MegaNeon',           defaultPrice: 90 },
+  { key: 'meganeon_fly',      props: ['meganeon','fly'],        label: 'Mega + Fly',         defaultPrice: 105 },
+  { key: 'meganeon_ride',     props: ['meganeon','ride'],       label: 'Mega + Ride',        defaultPrice: 98 },
+  { key: 'meganeon_fly_ride', props: ['meganeon','fly','ride'], label: 'Mega + Fly + Ride',  defaultPrice: 113 },
+];
 
 const PETS_BASE = [
   {
-    id: 'cat', name: 'Cat', rarity: 'common', canFly: true, canRide: true,
+    id: 'cat', name: 'Cat', rarity: 'common',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
     image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg5OOiKnn1NmXkDCafFRmBxZ38SKwtmJaZJLJbEtNhY-1iMA08lSL77LW2Fr2clsMLvfWNF5FD3ulSS2WXp610WQEFW3NjjObIG02tTq3NP6mcqe03ZpdWFXYb6_x1lnSa2Xpt4In-EHMSIePZNmygEN4zHqUP3JL8MLMjmVH7n8lplLuTAhujlxX5YIqA/s128/Cat_Icon.webp',
-    defaultPrices: { base: { 'Newborn':5,'Junior':6,'Pre-Teen':7,'Teen':8,'Post-Teen':9,'Full-Grown':11,'Reborn':18,'Twinkle':22,'Sparkle':27,'Flare':32,'Sunshine':38,'Luminous':45 }, neon:30, mega:80, fly:5, ride:8 },
-    defaultAges: { 'Newborn':true,'Junior':true,'Pre-Teen':true,'Teen':true,'Post-Teen':true,'Full-Grown':true,'Reborn':false,'Twinkle':false,'Sparkle':false,'Flare':false,'Sunshine':false,'Luminous':false }
   },
   {
-    id: 'dog', name: 'Dog', rarity: 'common', canFly: true, canRide: true,
+    id: 'dog', name: 'Dog', rarity: 'common',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
     image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEicYvUjghtePc2ZsdMwulLKmfQgndZQvFeQtrkvxwgKjecg0XK_6l-1IqDwrS0qgHi3-j17m1RsNq5tzmTDaVsJAIFu_czL-Sxr3R0zFnbrsQdvWw-eS9au4KfRqIkpUeVuIQLjVYI0MwKJF17NEGtsmc-TarjLf7w5QFOyJj768qH-VYDUxobY-rqn2I8/s70/Dog.webp',
-    defaultPrices: { base: { 'Newborn':4,'Junior':5,'Pre-Teen':6,'Teen':7,'Post-Teen':8,'Full-Grown':10,'Reborn':16,'Twinkle':20,'Sparkle':25,'Flare':30,'Sunshine':36,'Luminous':42 }, neon:40, mega:100, fly:6, ride:9 },
-    defaultAges: { 'Newborn':true,'Junior':true,'Pre-Teen':true,'Teen':true,'Post-Teen':true,'Full-Grown':true,'Reborn':false,'Twinkle':false,'Sparkle':false,'Flare':false,'Sunshine':false,'Luminous':false }
   }
-  // Добавляйте питомцев сюда...
 ];
 
 let stockData = {};
 
+function isVariantValid(pet, variant) {
+  const p = variant.props;
+  if (p.includes('fly')      && !pet.canFly)      return false;
+  if (p.includes('ride')     && !pet.canRide)     return false;
+  if (p.includes('neon')     && !pet.canNeon)     return false;
+  if (p.includes('meganeon') && !pet.canMeganeon) return false;
+  if (p.includes('neon')     && p.includes('meganeon')) return false;
+  return true;
+}
+
 function getSD(id) {
-  if (!stockData[id]) {
-    const base = PETS_BASE.find(p => p.id === id);
-    stockData[id] = {
-      inStock:    true,
-      ages:       { ...base.defaultAges },
-      basePrices: { ...base.defaultPrices.base },
-      neonPrice:  base.defaultPrices.neon,
-      megaPrice:  base.defaultPrices.mega,
-      flyPrice:   base.defaultPrices.fly,
-      ridePrice:  base.defaultPrices.ride,
-      oldPrice:   null,
-    };
-  }
-  return stockData[id];
+  if (!stockData[id]) stockData[id] = {};
+  const sd  = stockData[id];
+  const pet = PETS_BASE.find(p => p.id === id);
+
+  if (!sd.variants) sd.variants = {};
+  VARIANTS.forEach(v => {
+    if (!isVariantValid(pet, v)) return;
+    if (!sd.variants[v.key]) {
+      sd.variants[v.key] = { inStock: true, price: v.defaultPrice };
+    }
+  });
+
+  // inStock = true если хотя бы один вариант включён
+  sd.inStock = Object.values(sd.variants).some(x => x.inStock);
+  return sd;
 }
 
 // =============================================
@@ -251,7 +290,6 @@ async function loadFromJsonBin() {
   } catch(e) {
     showStatus('Ошибка загрузки: ' + e.message, 'error');
   }
-  // Инициализируем дефолты для питомцев без данных
   PETS_BASE.forEach(p => getSD(p.id));
   renderPets();
   updateStats();
@@ -276,7 +314,7 @@ async function saveToJsonBin() {
 }
 
 // =============================================
-// UI HELPERS
+// UI
 // =============================================
 function showStatus(msg, type) {
   const el = document.getElementById('status-msg');
@@ -286,200 +324,156 @@ function showStatus(msg, type) {
 }
 
 function updateStats() {
-  let totalAgesIn = 0, totalAgesOut = 0;
-  PETS_BASE.forEach(p => {
-    const sd = getSD(p.id);
-    ALL_AGES.forEach(a => {
-      if (sd.ages[a]) totalAgesIn++; else totalAgesOut++;
+  let varIn = 0, varOut = 0;
+  PETS_BASE.forEach(pet => {
+    const sd = getSD(pet.id);
+    VARIANTS.forEach(v => {
+      if (!isVariantValid(pet, v)) return;
+      if (sd.variants[v.key]?.inStock) varIn++; else varOut++;
     });
   });
-  document.getElementById('stat-total').textContent    = PETS_BASE.length;
-  document.getElementById('stat-ages-in').textContent  = totalAgesIn;
-  document.getElementById('stat-ages-out').textContent = totalAgesOut;
+  document.getElementById('stat-total').textContent        = PETS_BASE.length;
+  document.getElementById('stat-variants-in').textContent  = varIn;
+  document.getElementById('stat-variants-out').textContent = varOut;
 }
 
 // =============================================
-// PET CARD ACTIONS
+// ACTIONS
 // =============================================
-function toggleGlobal(id) {
-  const sd = getSD(id);
-  sd.inStock = !sd.inStock;
+function toggleGlobal(petId) {
+  const sd  = getSD(petId);
+  const pet = PETS_BASE.find(p => p.id === petId);
+  const newState = !sd.inStock;
+  VARIANTS.forEach(v => {
+    if (isVariantValid(pet, v) && sd.variants[v.key]) {
+      sd.variants[v.key].inStock = newState;
+    }
+  });
+  sd.inStock = newState;
   updateStats();
-  const card = document.querySelector(`[data-id="${id}"]`);
-  if (card) {
-    const inp = card.querySelector('.global-toggle');
-    const lbl = card.querySelector('.toggle-label');
-    if (inp) inp.checked = sd.inStock;
-    if (lbl) { lbl.textContent = sd.inStock ? 'В НАЛИЧИИ' : 'НЕТ'; lbl.className = 'toggle-label ' + (sd.inStock ? 'in' : 'out'); }
-    card.style.opacity = sd.inStock ? '1' : '0.6';
-  }
+  rerenderCard(petId);
 }
 
-function toggleAge(id, age) {
-  const sd = getSD(id);
-  sd.ages[age] = !sd.ages[age];
+function toggleVariant(petId, variantKey) {
+  const sd = getSD(petId);
+  if (!sd.variants[variantKey]) return;
+  sd.variants[variantKey].inStock = !sd.variants[variantKey].inStock;
+  sd.inStock = Object.values(sd.variants).some(x => x.inStock);
   updateStats();
-  const btn = document.getElementById(`age-btn-${id}-${age.replace(/[^a-z]/gi,'-')}`);
-  if (btn) {
-    btn.textContent = age;
-    btn.className = 'age-toggle-btn ' + (sd.ages[age] ? 'age-on' : 'age-off');
+
+  const card = document.querySelector(`[data-id="${petId}"]`);
+  if (!card) return;
+
+  const row = card.querySelector(`[data-vkey="${variantKey}"]`);
+  if (row) {
+    const isOn = sd.variants[variantKey].inStock;
+    row.className = `variant-row ${isOn ? 'v-in' : 'v-out'}`;
+    const inp = row.querySelector('input[type=checkbox]');
+    if (inp) inp.checked = isOn;
   }
+
+  const globalInp = card.querySelector('.global-toggle');
+  const globalLbl = card.querySelector('.toggle-label');
+  if (globalInp) globalInp.checked = sd.inStock;
+  if (globalLbl) {
+    globalLbl.textContent = sd.inStock ? 'В НАЛИЧИИ' : 'НЕТ';
+    globalLbl.className = 'toggle-label ' + (sd.inStock ? 'in' : 'out');
+  }
+  card.classList.toggle('globally-off', !sd.inStock);
 }
 
-function updateBasePriceAge(id, age, val, inputEl) {
-  const sd  = getSD(id);
-  const num = parseFloat(val);
-  if (!isNaN(num) && num > 0) {
-    sd.basePrices[age] = num;
-  } else {
-    // Restore previous valid value in the input
-    if (inputEl) inputEl.value = sd.basePrices[age] !== undefined
-      ? sd.basePrices[age]
-      : PETS_BASE.find(p => p.id === id).defaultPrices.base[age];
-  }
-}
-
-function updatePropPrice(id, prop, val, inputEl) {
-  const sd  = getSD(id);
+function updateVariantPrice(petId, variantKey, val, inputEl) {
+  const sd  = getSD(petId);
+  if (!sd.variants[variantKey]) return;
   const num = parseFloat(val);
   if (!isNaN(num) && num >= 0) {
-    sd[prop + 'Price'] = num;
+    sd.variants[variantKey].price = num;
   } else {
-    // Restore previous value — never treat empty as anything special
-    if (inputEl) inputEl.value = sd[prop + 'Price'];
+    if (inputEl) inputEl.value = sd.variants[variantKey].price;
   }
-  refreshPreview(id);
 }
 
-function updateOldPrice(id, val) {
-  const sd = getSD(id);
-  const num = parseFloat(val);
-  sd.oldPrice = (!isNaN(num) && num > 0) ? num : null;
-  refreshPreview(id);
+function rerenderCard(petId) {
+  const old = document.querySelector(`[data-id="${petId}"]`);
+  if (!old) return;
+  const tmp = document.createElement('div');
+  tmp.innerHTML = buildPetCard(PETS_BASE.find(p => p.id === petId));
+  old.replaceWith(tmp.firstElementChild);
 }
 
-function refreshPreview(id) {
-  const el = document.querySelector(`[data-id="${id}"] .price-preview`);
-  if (el) el.innerHTML = buildPreviewHTML(id);
-}
+// =============================================
+// BUILD CARD
+// =============================================
+function buildPetCard(pet) {
+  const sd = getSD(pet.id);
 
-function buildPreviewHTML(id) {
-  const sd = getSD(id);
-  const base = PETS_BASE.find(p => p.id === id);
-  const newbornPrice = sd.basePrices['Newborn'] || base.defaultPrices.base['Newborn'];
-  const neon = sd.neonPrice, mega = sd.megaPrice;
-  const fly  = base.canFly  ? sd.flyPrice  : 0;
-  const ride = base.canRide ? sd.ridePrice : 0;
-  const oldP = sd.oldPrice;
+  const variantsHTML = VARIANTS
+    .filter(v => isVariantValid(pet, v))
+    .map(v => {
+      const vd    = sd.variants[v.key] || { inStock: false, price: v.defaultPrice };
+      const isOn  = vd.inStock;
+      const price = vd.price;
+      const propsHTML = v.props.map(p =>
+        `<span class="vprop vprop-${p}">${PROP_LABELS[p]}</span>`
+      ).join('');
 
-  let html = `<span class="dim">Newborn базовая: </span><span class="pv">${newbornPrice}</span><br>`;
-  html += `<span class="dim">+Neon: </span><span class="pv">${neon}</span>  `;
-  html += `<span class="dim">+Mega: </span><span class="pv">${mega}</span><br>`;
-  if (base.canFly)  html += `<span class="dim">+Fly: </span><span class="pv">${fly}</span>  `;
-  if (base.canRide) html += `<span class="dim">+Ride: </span><span class="pv">${ride}</span>`;
-  if (oldP) html += `<br><span class="dim">Старая цена: </span><span class="po">${oldP}</span>`;
-  return html;
+      return `
+        <div class="variant-row ${isOn ? 'v-in' : 'v-out'}" data-vkey="${v.key}">
+          <label class="mini-toggle">
+            <input type="checkbox" ${isOn ? 'checked' : ''} onchange="toggleVariant('${pet.id}','${v.key}')">
+            <span class="mini-slider"></span>
+          </label>
+          <div class="variant-info">
+            <div class="variant-name">${v.label}</div>
+            ${v.props.length ? `<div class="variant-props">${propsHTML}</div>` : ''}
+          </div>
+          <div class="variant-price-wrap">
+            <div class="currency-icon"></div>
+            <input class="variant-price-input" type="number" inputmode="decimal" min="0" step="0.1"
+              value="${price}"
+              onchange="updateVariantPrice('${pet.id}','${v.key}',this.value,this)"
+              onclick="this.select()">
+          </div>
+        </div>`;
+    }).join('');
+
+  return `
+    <div class="pet-card${sd.inStock ? '' : ' globally-off'}" data-id="${pet.id}">
+      <div class="pet-card-top">
+        <img class="pet-img" src="${pet.image}" alt="${pet.name}" loading="lazy">
+        <div class="pet-info">
+          <div class="pet-name">${pet.name}</div>
+          <span class="badge badge-rarity-${pet.rarity}">${pet.rarity.toUpperCase()}</span>
+        </div>
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" class="global-toggle" ${sd.inStock ? 'checked' : ''} onchange="toggleGlobal('${pet.id}')">
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label ${sd.inStock ? 'in' : 'out'}">${sd.inStock ? 'В НАЛИЧИИ' : 'НЕТ'}</span>
+        </div>
+      </div>
+
+      <div class="variants-section">
+        <div class="section-title">Варианты — наличие и цена</div>
+        <div class="variants-list">${variantsHTML}</div>
+      </div>
+    </div>`;
 }
 
 // =============================================
 // RENDER
 // =============================================
 function renderPets() {
-  const search = document.getElementById('admin-search').value.toLowerCase();
-  const grid   = document.getElementById('pet-grid');
-
+  const search   = document.getElementById('admin-search').value.toLowerCase();
+  const grid     = document.getElementById('pet-grid');
   const filtered = PETS_BASE.filter(p => p.name.toLowerCase().includes(search));
 
   if (filtered.length === 0) {
     grid.innerHTML = `<div class="empty-state"><div>🔍</div>Питомцы не найдены</div>`;
     return;
   }
-
-  grid.innerHTML = filtered.map(p => {
-    const sd = getSD(p.id);
-
-    // Ages grid
-    const agesHTML = ALL_AGES.map(a => {
-      const on  = sd.ages[a];
-      const bid = `age-btn-${p.id}-${a.replace(/[^a-z]/gi,'-')}`;
-      return `<button id="${bid}" class="age-toggle-btn ${on?'age-on':'age-off'}" onclick="toggleAge('${p.id}','${a}')">${a}</button>`;
-    }).join('');
-
-    // Base prices by age
-    const ageBasePricesHTML = ALL_AGES.map(a => `
-      <div class="price-field">
-        <label>${a.toUpperCase()}</label>
-        <input class="price-input" type="number" inputmode="numeric" min="1"
-          value="${sd.basePrices[a] !== undefined ? sd.basePrices[a] : p.defaultPrices.base[a]}"
-          onchange="updateBasePriceAge('${p.id}','${a}',this.value,this)">
-      </div>`).join('');
-
-    return `
-      <div class="pet-card" data-id="${p.id}" style="opacity:${sd.inStock?'1':'0.6'}">
-        <div class="pet-card-top">
-          <img class="pet-img" src="${p.image}" alt="${p.name}" loading="lazy">
-          <div class="pet-info">
-            <div class="pet-name">${p.name}</div>
-            <span class="badge badge-rarity-${p.rarity}">${p.rarity.toUpperCase()}</span>
-          </div>
-          <div class="toggle-wrap">
-            <label class="toggle">
-              <input type="checkbox" class="global-toggle" ${sd.inStock?'checked':''} onchange="toggleGlobal('${p.id}')">
-              <span class="slider"></span>
-            </label>
-            <span class="toggle-label ${sd.inStock?'in':'out'}">${sd.inStock?'В НАЛИЧИИ':'НЕТ'}</span>
-          </div>
-        </div>
-
-        <!-- ВОЗРАСТЫ -->
-        <div class="ages-section">
-          <div class="section-title">Наличие по возрастам</div>
-          <div class="ages-grid">${agesHTML}</div>
-        </div>
-
-        <!-- ЦЕНЫ СВОЙСТВ -->
-        <div class="prop-prices">
-          <div class="section-title">Цены добавок</div>
-          <div class="prop-price-grid">
-            <div class="price-field">
-              <label>🟢 NEON</label>
-              <input class="price-input" type="number" inputmode="numeric" min="0"
-                value="${sd.neonPrice}" onchange="updatePropPrice('${p.id}','neon',this.value,this)">
-            </div>
-            <div class="price-field">
-              <label>💜 MEGA NEON</label>
-              <input class="price-input" type="number" inputmode="numeric" min="0"
-                value="${sd.megaPrice}" onchange="updatePropPrice('${p.id}','mega',this.value,this)">
-            </div>
-            ${p.canFly ? `
-            <div class="price-field">
-              <label>✈️ FLYABLE</label>
-              <input class="price-input" type="number" inputmode="numeric" min="0"
-                value="${sd.flyPrice}" onchange="updatePropPrice('${p.id}','fly',this.value,this)">
-            </div>` : ''}
-            ${p.canRide ? `
-            <div class="price-field">
-              <label>🐎 RIDEABLE</label>
-              <input class="price-input" type="number" inputmode="numeric" min="0"
-                value="${sd.ridePrice}" onchange="updatePropPrice('${p.id}','ride',this.value,this)">
-            </div>` : ''}
-            <div class="price-field">
-              <label>СТАРАЯ ЦЕНА (скидка)</label>
-              <input class="price-input" type="number" inputmode="numeric" min="0"
-                value="${sd.oldPrice||''}" placeholder="нет"
-                onchange="updateOldPrice('${p.id}',this.value)">
-            </div>
-          </div>
-        </div>
-
-        <!-- ЦЕНЫ ПО ВОЗРАСТАМ -->
-        <div class="price-section">
-          <div class="section-title">Базовые цены по возрастам</div>
-          <div class="price-grid">${ageBasePricesHTML}</div>
-          <div class="price-preview">${buildPreviewHTML(p.id)}</div>
-        </div>
-      </div>`;
-  }).join('');
+  grid.innerHTML = filtered.map(p => buildPetCard(p)).join('');
 }
 </script>
 </body>
