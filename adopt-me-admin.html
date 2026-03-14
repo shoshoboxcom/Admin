@@ -55,9 +55,11 @@
   .stat-label { color: var(--muted); font-size: 9px; letter-spacing: 1.5px; }
 
   /* TOOLBAR */
-  .toolbar { margin-bottom: 16px; }
-  .search-box { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; outline: none; transition: border-color 0.2s; }
+  .toolbar { margin-bottom: 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .search-box { flex: 1; min-width: 180px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 16px; outline: none; transition: border-color 0.2s; }
   .search-box:focus { border-color: var(--accent); }
+  .rarity-filter { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-family: 'Space Mono', monospace; font-size: 13px; outline: none; transition: border-color 0.2s; cursor: pointer; }
+  .rarity-filter:focus { border-color: var(--accent); }
 
   /* PET GRID */
   .pet-grid { display: flex; flex-direction: column; gap: 20px; }
@@ -178,6 +180,14 @@
 
     <div class="toolbar">
       <input class="search-box" id="admin-search" placeholder="🔍 Поиск питомца..." oninput="renderPets()">
+      <select class="rarity-filter" id="rarity-filter" onchange="renderPets()">
+        <option value="">Все редкости</option>
+        <option value="common">Common</option>
+        <option value="uncommon">Uncommon</option>
+        <option value="rare">Rare</option>
+        <option value="ultra-rare">Ultra Rare</option>
+        <option value="legendary">Legendary</option>
+      </select>
     </div>
 
     <div class="pet-grid" id="pet-grid"></div>
@@ -211,17 +221,70 @@ const VARIANTS = [
   { key: 'meganeon_fly_ride', props: ['meganeon','fly','ride'], label: 'Mega + Fly + Ride',  defaultPrice: 113 },
 ];
 
+// =============================================
+// ПОЛНЫЙ СПИСОК ПИТОМЦЕВ (как в магазине)
+// =============================================
 const PETS_BASE = [
   {
     id: 'cat', name: 'Cat', rarity: 'common',
     canFly: true, canRide: true, canNeon: true, canMeganeon: true,
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg5OOiKnn1NmXkDCafFRmBxZ38SKwtmJaZJLJbEtNhY-1iMA08lSL77LW2Fr2clsMLvfWNF5FD3ulSS2WXp610WQEFW3NjjObIG02tTq3NP6mcqe03ZpdWFXYb6_x1lnSa2Xpt4In-EHMSIePZNmygEN4zHqUP3JL8MLMjmVH7n8lplLuTAhujlxX5YIqA/s128/Cat_Icon.webp',
+    image: 'https://static.wikia.nocookie.net/adoptme/images/7/7e/Cat_Icon.png/revision/latest?cb=20260228185044',
   },
   {
     id: 'dog', name: 'Dog', rarity: 'common',
     canFly: true, canRide: true, canNeon: true, canMeganeon: true,
-    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEicYvUjghtePc2ZsdMwulLKmfQgndZQvFeQtrkvxwgKjecg0XK_6l-1IqDwrS0qgHi3-j17m1RsNq5tzmTDaVsJAIFu_czL-Sxr3R0zFnbrsQdvWw-eS9au4KfRqIkpUeVuIQLjVYI0MwKJF17NEGtsmc-TarjLf7w5QFOyJj768qH-VYDUxobY-rqn2I8/s70/Dog.webp',
-  }
+    image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjnIB1mWuZE0imosj_LHTQdTOzzpemh6GdOWSVQXp0DDCqHpD3Jj8yjJCRJeOLS_-a37O4g5TRuuMXnOo899Rg9LrQthSCFHxw7RtwGNJYJ545Zs2k9GQkUBRXo9rrd-vFPxfj2lPB6-R5lvgqxojED90h3w1p8Fj6tIZij0VkfX1vThMIJAE8Oy4tx30Q/s2048/Titelloses%20189_20260314112059.png',
+  },
+  {
+    id: 'california_condor', name: 'California Condor', rarity: 'common',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/6/6a/California_Condor.png/revision/latest/scale-to-width-down/1000?cb=20260302180734',
+  },
+  {
+    id: 'galapagos_sea_lion', name: 'Galapagos Sea Lion', rarity: 'common',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/7/74/Galapagos_Sea_Lion.png/revision/latest/scale-to-width-down/1000?cb=20260302180804',
+  },
+  {
+    id: 'kakapo', name: 'Kakapo', rarity: 'uncommon',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/4/45/Kakapo.png/revision/latest/scale-to-width-down/1000?cb=20260302180912',
+  },
+  {
+    id: 'black_tiger', name: 'Black Tiger', rarity: 'uncommon',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/0/0e/Black_Tiger.png/revision/latest/scale-to-width-down/1000?cb=20260302180838',
+  },
+  {
+    id: 'mrs_whiskerpips', name: 'Mrs. Whiskerpips', rarity: 'ultra-rare',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/2/27/Mrs._Whiskerpips.png/revision/latest?cb=20251219170420',
+  },
+  {
+    id: 'black_footed_ferret', name: 'Black-Footed Ferret', rarity: 'ultra-rare',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/0/07/Black-Footed_Ferret.png/revision/latest/scale-to-width-down/1000?cb=20260302181041',
+  },
+  {
+    id: 'fire_foal', name: 'Fire Foal', rarity: 'ultra-rare',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/8/81/Fire_Foal.png/revision/latest/scale-to-width-down/1000?cb=20260211181134',
+  },
+  {
+    id: 'pangolin', name: 'Pangolin', rarity: 'ultra-rare',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/2/28/Pangolin.png/revision/latest/scale-to-width-down/1000?cb=20260302181107',
+  },
+  {
+    id: 'dire_wolf', name: 'Dire Wolf', rarity: 'ultra-rare',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/3/32/Dire_Wolf.png/revision/latest?cb=20260218190117',
+  },
+  {
+    id: 'fire_mare', name: 'Fire Mare', rarity: 'legendary',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/4/4b/Fire_Mare.png/revision/latest/scale-to-width-down/1000?cb=20260211181225',
+  },
 ];
 
 let stockData = {};
@@ -249,7 +312,6 @@ function getSD(id) {
     }
   });
 
-  // inStock = true если хотя бы один вариант включён
   sd.inStock = Object.values(sd.variants).some(x => x.inStock);
   return sd;
 }
@@ -466,8 +528,13 @@ function buildPetCard(pet) {
 // =============================================
 function renderPets() {
   const search   = document.getElementById('admin-search').value.toLowerCase();
+  const rarity   = document.getElementById('rarity-filter').value;
   const grid     = document.getElementById('pet-grid');
-  const filtered = PETS_BASE.filter(p => p.name.toLowerCase().includes(search));
+  const filtered = PETS_BASE.filter(p => {
+    if (!p.name.toLowerCase().includes(search)) return false;
+    if (rarity && p.rarity !== rarity) return false;
+    return true;
+  });
 
   if (filtered.length === 0) {
     grid.innerHTML = `<div class="empty-state"><div>🔍</div>Питомцы не найдены</div>`;
