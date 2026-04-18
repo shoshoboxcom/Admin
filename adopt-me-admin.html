@@ -35,7 +35,7 @@
   .save-btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .logout-btn { background: transparent; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; color: var(--muted); font-family: 'Space Mono', monospace; font-size: 11px; cursor: pointer; touch-action: manipulation; white-space: nowrap; }
   .logout-btn:active { border-color: var(--red); color: var(--red); }
-
+  
   .status-bar { padding: 0 16px; }
   .status-msg { font-size: 12px; padding: 10px 14px; border-radius: 8px; display: none; margin: 10px 0 0; text-align: center; }
   .status-msg.success { background: rgba(0,232,122,0.1); color: var(--green); border: 1px solid rgba(0,232,122,0.2); }
@@ -225,7 +225,7 @@ const VARIANTS = [
 // ПОЛНЫЙ СПИСОК ПИТОМЦЕВ (как в магазине)
 // =============================================
 const PETS_BASE = [
-  {
+   {
     id: 'cat', name: 'Cat', rarity: 'common',
     canFly: true, canRide: true, canNeon: true, canMeganeon: true,
     image: 'https://static.wikia.nocookie.net/adoptme/images/7/7e/Cat_Icon.png/revision/latest?cb=20260228185044',
@@ -235,25 +235,15 @@ const PETS_BASE = [
     canFly: true, canRide: true, canNeon: true, canMeganeon: true,
     image: 'https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjnIB1mWuZE0imosj_LHTQdTOzzpemh6GdOWSVQXp0DDCqHpD3Jj8yjJCRJeOLS_-a37O4g5TRuuMXnOo899Rg9LrQthSCFHxw7RtwGNJYJ545Zs2k9GQkUBRXo9rrd-vFPxfj2lPB6-R5lvgqxojED90h3w1p8Fj6tIZij0VkfX1vThMIJAE8Oy4tx30Q/s2048/Titelloses%20189_20260314112059.png',
   },
-  {
-    id: 'california_condor', name: 'California Condor', rarity: 'common',
+   {
+    id: 'fire_mare', name: 'Fire Mare', rarity: 'legendary',
     canFly: true, canRide: true, canNeon: true, canMeganeon: true,
-    image: 'https://static.wikia.nocookie.net/adoptme/images/6/6a/California_Condor.png/revision/latest/scale-to-width-down/1000?cb=20260302180734',
+    image: 'https://static.wikia.nocookie.net/adoptme/images/4/4b/Fire_Mare.png/revision/latest/scale-to-width-down/1000?cb=20260211181225',
   },
   {
-    id: 'galapagos_sea_lion', name: 'Galapagos Sea Lion', rarity: 'common',
+    id: 'dire_wolf', name: 'Dire Wolf', rarity: 'ultra-rare',
     canFly: true, canRide: true, canNeon: true, canMeganeon: true,
-    image: 'https://static.wikia.nocookie.net/adoptme/images/7/74/Galapagos_Sea_Lion.png/revision/latest/scale-to-width-down/1000?cb=20260302180804',
-  },
-  {
-    id: 'kakapo', name: 'Kakapo', rarity: 'uncommon',
-    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
-    image: 'https://static.wikia.nocookie.net/adoptme/images/4/45/Kakapo.png/revision/latest/scale-to-width-down/1000?cb=20260302180912',
-  },
-  {
-    id: 'black_tiger', name: 'Black Tiger', rarity: 'uncommon',
-    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
-    image: 'https://static.wikia.nocookie.net/adoptme/images/0/0e/Black_Tiger.png/revision/latest/scale-to-width-down/1000?cb=20260302180838',
+    image: 'https://static.wikia.nocookie.net/adoptme/images/3/32/Dire_Wolf.png/revision/latest?cb=20260218190117',
   },
   {
     id: 'mrs_whiskerpips', name: 'Mrs. Whiskerpips', rarity: 'ultra-rare',
@@ -276,15 +266,70 @@ const PETS_BASE = [
     image: 'https://static.wikia.nocookie.net/adoptme/images/2/28/Pangolin.png/revision/latest/scale-to-width-down/1000?cb=20260302181107',
   },
   {
-    id: 'dire_wolf', name: 'Dire Wolf', rarity: 'ultra-rare',
+    id: 'kakapo', name: 'Kakapo', rarity: 'uncommon',
     canFly: true, canRide: true, canNeon: true, canMeganeon: true,
-    image: 'https://static.wikia.nocookie.net/adoptme/images/3/32/Dire_Wolf.png/revision/latest?cb=20260218190117',
+    image: 'https://static.wikia.nocookie.net/adoptme/images/4/45/Kakapo.png/revision/latest/scale-to-width-down/1000?cb=20260302180912',
   },
   {
-    id: 'fire_mare', name: 'Fire Mare', rarity: 'legendary',
+    id: 'black_tiger', name: 'Black Tiger', rarity: 'uncommon',
     canFly: true, canRide: true, canNeon: true, canMeganeon: true,
-    image: 'https://static.wikia.nocookie.net/adoptme/images/4/4b/Fire_Mare.png/revision/latest/scale-to-width-down/1000?cb=20260211181225',
+    image: 'https://static.wikia.nocookie.net/adoptme/images/0/0e/Black_Tiger.png/revision/latest/scale-to-width-down/1000?cb=20260302180838',
   },
+  {
+    id: 'california_condor', name: 'California Condor', rarity: 'common',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/6/6a/California_Condor.png/revision/latest/scale-to-width-down/1000?cb=20260302180734',
+  },
+  {
+    id: 'galapagos_sea_lion', name: 'Galapagos Sea Lion', rarity: 'common',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/7/74/Galapagos_Sea_Lion.png/revision/latest/scale-to-width-down/1000?cb=20260302180804',
+  },
+ {
+    id: 'turtle', name: 'Turtle', rarity: 'legendary',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/7/7e/Turtle_Pet.png/revision/latest?cb=20200307174933',
+  },
+   {
+    id: 'Blue_Whale', name: 'Blue Whale', rarity: 'legendary',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/d/dc/Blue_Whale.png/revision/latest/scale-to-width-down/1000?cb=20260302181132',
+  },
+     {
+    id: 'Dango_Penguins', name: 'Dango Penguins', rarity: 'legendary',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/3/3c/Dango_Penguins.png/revision/latest/scale-to-width-down/1000?cb=20251105163728',
+  },
+     {
+    id: 'Grim_Dragon', name: 'Grim Dragon', rarity: 'legendary',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/2/24/Grim_Dragon_Teaser.png/revision/latest?cb=20240930162926',
+  },
+  {
+    id: 'Mochi_Meow', name: 'Mochi Meow', rarity: 'legendary',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/8/87/Mochi_Meow.png/revision/latest/scale-to-width-down/1000?cb=20260318163238',
+  },
+   {
+    id: 'Slimingo', name: 'Slimingo', rarity: 'legendary',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/6/60/Slimingo.png/revision/latest/scale-to-width-down/1000?cb=20251015154117',
+  },
+   {
+    id: 'Pupcake', name: 'Pupcake', rarity: 'ultra-rare',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/a/a7/Pupcake.png/revision/latest/scale-to-width-down/1000?cb=20260403163702',
+  },
+   {
+    id: 'Toucan', name: 'Toucan', rarity: 'ultra-rare',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/7/7a/AM_Toucan.png/revision/latest?cb=20210703054423',
+  },
+   {
+    id: 'Waffle_Wyrm', name: 'Waffle Wyrm', rarity: 'ultra-rare',
+    canFly: true, canRide: true, canNeon: true, canMeganeon: true,
+    image: 'https://static.wikia.nocookie.net/adoptme/images/4/40/Waffle_Wyrm.png/revision/latest/scale-to-width-down/1000?cb=20260318163250',
+  }
 ];
 
 let stockData = {};
